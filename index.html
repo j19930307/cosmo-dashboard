@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tripleS Cosmo Live-Clip 成員次數與時間統計</title>
-    <meta name="description" content="tripleS Cosmo Room Live Clip 各成員參與次數與直播時間統計">
+    <title>tripleS Cosmo Live-Clip 次數與時長統計 (by 月份)</title>
+    <meta name="description" content="tripleS Cosmo Room Live Clip 各成員直播次數與總直播時長統計（支援月份篩選）">
     
     <!-- Google Fonts & Supabase JS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,6 +22,7 @@
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
             --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
         }
 
         * {
@@ -54,7 +55,7 @@
         }
 
         .header-container {
-            max-width: 1200px;
+            max-width: 1240px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -92,33 +93,77 @@
 
         .header-summary {
             display: flex;
-            gap: 16px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .stat-pill {
             background: var(--bg-card);
             border: 1px solid var(--border-glass);
-            padding: 6px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .stat-pill strong {
             color: white;
-            font-size: 1rem;
+            font-size: 0.95rem;
+        }
+
+        /* 月份篩選列 */
+        .month-bar {
+            max-width: 1240px;
+            margin: 24px auto 0;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+        }
+
+        .month-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .month-chip {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .month-chip:hover, .month-chip.active {
+            background: var(--accent-purple);
+            color: white;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 14px rgba(139, 92, 246, 0.4);
         }
 
         /* 主區域 */
         .container {
-            max-width: 1200px;
-            margin: 30px auto;
+            max-width: 1240px;
+            margin: 24px auto;
             padding: 0 20px;
         }
 
         .main-layout {
             display: grid;
-            grid-template-columns: 360px 1fr;
+            grid-template-columns: 380px 1fr;
             gap: 28px;
         }
 
@@ -143,18 +188,37 @@
             margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
         }
 
-        .sidebar-title i {
-            color: #f59e0b;
+        .sort-switch {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 2px;
+        }
+
+        .sort-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .sort-btn.active {
+            background: var(--accent-purple);
+            color: white;
         }
 
         .member-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-height: calc(100vh - 200px);
+            max-height: calc(100vh - 220px);
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -178,9 +242,9 @@
         }
 
         .rank-num {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 800;
-            width: 24px;
+            width: 22px;
             color: var(--text-muted);
             text-align: center;
         }
@@ -206,14 +270,24 @@
             font-size: 0.95rem;
         }
 
+        .member-sub-info {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
         .clip-count-badge {
-            font-size: 1.1rem;
+            text-align: right;
+        }
+
+        .badge-main {
+            font-size: 1.05rem;
             font-weight: 800;
             color: #c084fc;
         }
 
-        .clip-unit {
-            font-size: 0.75rem;
+        .badge-sub {
+            font-size: 0.72rem;
             color: var(--text-muted);
         }
 
@@ -295,6 +369,18 @@
             justify-content: center;
             color: white;
             font-size: 20px;
+        }
+
+        .duration-badge {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 6px;
         }
 
         .clip-details {
@@ -421,24 +507,36 @@
             <div class="brand">
                 <div class="brand-logo"><i class="fa-solid fa-video"></i></div>
                 <div class="brand-title">
-                    <h1>tripleS Live-Clip 成員統計</h1>
+                    <h1>tripleS Live-Clip 直播統計</h1>
                 </div>
             </div>
 
             <div class="header-summary">
-                <div class="stat-pill">正片 Live-Clip 總數: <strong id="total-live-clips">0</strong> 次</div>
-                <div class="stat-pill">統計成員數: <strong id="total-members-count">0</strong> 位</div>
+                <div class="stat-pill"><i class="fa-solid fa-clapperboard"></i> 總次數: <strong id="total-live-clips">0</strong> 次</div>
+                <div class="stat-pill"><i class="fa-solid fa-clock"></i> 總時長: <strong id="total-live-duration">0 小時</strong></div>
+                <div class="stat-pill"><i class="fa-solid fa-user-group"></i> 成員數: <strong id="total-members-count">0</strong> 位</div>
             </div>
         </div>
     </header>
 
+    <!-- 月份選單 -->
+    <div class="month-bar">
+        <div class="month-label"><i class="fa-regular fa-calendar-days"></i> 月份篩選:</div>
+        <div class="month-chip active" onclick="selectMonth(null)" id="chip-month-all">全部月份</div>
+        <div id="month-chips-container" style="display:flex; gap:10px;"></div>
+    </div>
+
     <div class="container">
         <div class="main-layout">
             
-            <!-- 側邊欄：成員次數排行榜 -->
+            <!-- 側邊欄：成員次數/時長排行榜 -->
             <div class="sidebar-card">
                 <div class="sidebar-title">
-                    <i class="fa-solid fa-trophy"></i> 成員 Live-Clip 參與次數榜
+                    <span><i class="fa-solid fa-trophy" style="color:#f59e0b;"></i> 成員排行榜</span>
+                    <div class="sort-switch">
+                        <button class="sort-btn active" id="sort-count-btn" onclick="setSort('count')">依次數</button>
+                        <button class="sort-btn" id="sort-duration-btn" onclick="setSort('duration')">依時長</button>
+                    </div>
                 </div>
 
                 <div class="member-list" id="member-list-container">
@@ -480,13 +578,29 @@
         const SUPABASE_KEY = "sb_publishable_lA-gW3rOIF7X4hNiUGSCCQ_U_-0wOrv";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let liveClips = [];
+        let allLiveClips = [];
+        let monthFilteredClips = [];
+        let selectedMonth = null;
         let selectedMember = null;
+        let sortBy = 'count'; // 'count' 或 'duration'
         let memberStats = [];
+
+        // 格式化秒數為 小時/分鐘/秒
+        function formatDuration(seconds) {
+            if (!seconds || seconds <= 0) return '0 分';
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+
+            if (h > 0) {
+                return `${h} 小時 ${m} 分`;
+            }
+            return `${m} 分 ${s} 秒`;
+        }
 
         async function init() {
             try {
-                // 讀取 room_posts 中 kind == 'live-clip' 的資料，並排除 access_type == 'all' (幕後花絮)
+                // 讀取 room_posts 中 kind == 'live-clip' 且排除 access_type == 'all'
                 const { data, error } = await supabaseClient
                     .from('room_posts')
                     .select('*')
@@ -495,11 +609,10 @@
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
-                liveClips = data || [];
+                allLiveClips = data || [];
 
-                calculateMemberStats();
-                renderSidebar();
-                renderTimeline();
+                buildMonthChips();
+                applyMonthFilter();
             } catch (err) {
                 console.error("載入失敗:", err);
                 document.getElementById('clips-timeline-container').innerHTML = `
@@ -511,25 +624,93 @@
             }
         }
 
-        // 計算參與成員統計 (解析 videoItem.channels 陣列)
+        // 建立動態月份晶片按鈕
+        function buildMonthChips() {
+            const months = new Set();
+            allLiveClips.forEach(post => {
+                if (post.created_at) {
+                    const date = new Date(post.created_at);
+                    const yyyyMm = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                    months.add(yyyyMm);
+                }
+            });
+
+            const sortedMonths = Array.from(months).sort().reverse();
+            const container = document.getElementById('month-chips-container');
+
+            container.innerHTML = sortedMonths.map(m => {
+                const [y, mm] = m.split('-');
+                return `<div class="month-chip" id="chip-month-${m}" onclick="selectMonth('${m}')">${y}年${parseInt(mm)}月</div>`;
+            }).join('');
+        }
+
+        // 選擇月份
+        function selectMonth(monthStr) {
+            selectedMonth = monthStr;
+            document.querySelectorAll('.month-chip').forEach(el => el.classList.remove('active'));
+            if (monthStr === null) {
+                document.getElementById('chip-month-all').classList.add('active');
+            } else {
+                const chip = document.getElementById(`chip-month-${monthStr}`);
+                if (chip) chip.classList.add('active');
+            }
+
+            applyMonthFilter();
+        }
+
+        // 切換排序方式
+        function setSort(type) {
+            sortBy = type;
+            document.getElementById('sort-count-btn').classList.toggle('active', type === 'count');
+            document.getElementById('sort-duration-btn').classList.toggle('active', type === 'duration');
+            calculateMemberStats();
+            renderSidebar();
+        }
+
+        // 應用月份篩選
+        function applyMonthFilter() {
+            if (selectedMonth) {
+                monthFilteredClips = allLiveClips.filter(post => {
+                    if (!post.created_at) return false;
+                    const date = new Date(post.created_at);
+                    const yyyyMm = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                    return yyyyMm === selectedMonth;
+                });
+            } else {
+                monthFilteredClips = allLiveClips;
+            }
+
+            // 更新頂部總時長與總次數
+            const totalSec = monthFilteredClips.reduce((sum, p) => sum + (p.duration || 0), 0);
+            document.getElementById('total-live-clips').innerText = monthFilteredClips.length;
+            document.getElementById('total-live-duration').innerText = formatDuration(totalSec);
+
+            calculateMemberStats();
+            renderSidebar();
+            renderTimeline();
+        }
+
+        // 計算成員直播次數與總時長 (解析 videoItem.channels)
         function calculateMemberStats() {
             const counts = {};
+            const durations = {};
             const meta = {};
 
-            liveClips.forEach(post => {
+            monthFilteredClips.forEach(post => {
+                const postDuration = post.duration || 0;
                 const channels = post.channels || [];
+
                 if (channels.length === 0) {
-                    // 若無 channels 則回退使用 author_name
                     const name = post.author_name || 'Artist';
                     counts[name] = (counts[name] || 0) + 1;
-                    if (!meta[name]) {
-                        meta[name] = { avatar: post.author_avatar, color: '#8b5cf6' };
-                    }
+                    durations[name] = (durations[name] || 0) + postDuration;
+                    if (!meta[name]) meta[name] = { avatar: post.author_avatar, color: '#8b5cf6' };
                 } else {
                     channels.forEach(ch => {
                         const name = ch.name || post.author_name;
                         if (name) {
                             counts[name] = (counts[name] || 0) + 1;
+                            durations[name] = (durations[name] || 0) + postDuration;
                             if (!meta[name]) {
                                 meta[name] = {
                                     avatar: ch.profileImageUrl || post.author_avatar,
@@ -545,24 +726,35 @@
                 .map(([name, count]) => ({
                     name,
                     count,
+                    durationSec: durations[name] || 0,
                     avatar: meta[name] ? meta[name].avatar : '',
                     color: meta[name] ? meta[name].color : '#8b5cf6'
                 }))
-                .sort((a, b) => b.count - a.count);
+                .sort((a, b) => {
+                    if (sortBy === 'duration') {
+                        return b.durationSec - a.durationSec;
+                    }
+                    return b.count - a.count;
+                });
 
-            document.getElementById('total-live-clips').innerText = liveClips.length;
             document.getElementById('total-members-count').innerText = memberStats.length;
         }
 
         // 渲染側邊欄成員排行榜
         function renderSidebar() {
             const container = document.getElementById('member-list-container');
-            
+            const totalSec = monthFilteredClips.reduce((sum, p) => sum + (p.duration || 0), 0);
+
             let html = `
                 <div class="member-item ${selectedMember === null ? 'active' : ''}" onclick="selectMember(null)">
                     <div class="rank-num"><i class="fa-solid fa-users"></i></div>
-                    <div class="member-name-text">全體成員 (所有直播)</div>
-                    <div class="clip-count-badge">${liveClips.length} <span class="clip-unit">次</span></div>
+                    <div class="member-info">
+                        <div class="member-name-text">全體成員 (所有直播)</div>
+                        <div class="member-sub-info">總時長: ${formatDuration(totalSec)}</div>
+                    </div>
+                    <div class="clip-count-badge">
+                        <div class="badge-main">${monthFilteredClips.length} 次</div>
+                    </div>
                 </div>
             `;
 
@@ -572,8 +764,11 @@
                     <img class="member-avatar" src="${m.avatar}" style="border-color:${m.color}" alt="${m.name}" onerror="this.src='https://via.placeholder.com/42'">
                     <div class="member-info">
                         <div class="member-name-text">${m.name}</div>
+                        <div class="member-sub-info">時長: ${formatDuration(m.durationSec)}</div>
                     </div>
-                    <div class="clip-count-badge" style="color:${m.color}">${m.count} <span class="clip-unit">次</span></div>
+                    <div class="clip-count-badge">
+                        <div class="badge-main" style="color:${m.color}">${m.count} 次</div>
+                    </div>
                 </div>
             `).join('');
 
@@ -592,14 +787,15 @@
             const container = document.getElementById('clips-timeline-container');
             const titleEl = document.getElementById('current-filter-title');
 
+            let monthText = selectedMonth ? `${selectedMonth.split('-')[0]}年${parseInt(selectedMonth.split('-')[1])}月` : '所有月份';
             if (selectedMember) {
-                titleEl.innerHTML = `<i class="fa-solid fa-user-check"></i> ${selectedMember} 參與的 Live-Clip 時間紀錄`;
+                titleEl.innerHTML = `<i class="fa-solid fa-user-check"></i> ${selectedMember} 參與的 Live-Clip 紀錄 (${monthText})`;
             } else {
-                titleEl.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> 所有 Live-Clip 時間紀錄`;
+                titleEl.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> Live-Clip 時間紀錄 (${monthText})`;
             }
 
             // 篩選包含選定成員的 Live-Clips
-            const filteredClips = liveClips.filter(post => {
+            const filteredClips = monthFilteredClips.filter(post => {
                 if (!selectedMember) return true;
                 const channels = post.channels || [];
                 if (channels.length > 0) {
@@ -612,7 +808,7 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fa-solid fa-video-slash" style="font-size:36px;margin-bottom:12px;"></i>
-                        <p>尚無此成員的 Live-Clip 紀錄</p>
+                        <p>尚無符合條件的 Live-Clip 紀錄</p>
                     </div>
                 `;
                 return;
@@ -631,6 +827,7 @@
                     <div class="clip-row" onclick="openModal(${post.id})">
                         <div class="video-thumb">
                             ${videoUrl ? `<video src="${videoUrl}#t=0.5" preload="metadata"></video><div class="play-overlay-mini"><i class="fa-solid fa-play"></i></div>` : ''}
+                            <div class="duration-badge">${formatDuration(post.duration)}</div>
                         </div>
                         <div class="clip-details">
                             <div class="clip-date"><i class="fa-regular fa-calendar"></i> ${dateStr}</div>
@@ -651,7 +848,7 @@
 
         // 開啟 Modal
         function openModal(postId) {
-            const post = liveClips.find(p => p.id === postId);
+            const post = allLiveClips.find(p => p.id === postId);
             if (!post) return;
 
             const modal = document.getElementById('video-modal');
@@ -661,7 +858,7 @@
 
             videoBox.innerHTML = videoUrl ? `<video src="${videoUrl}" controls autoplay></video>` : '';
 
-            document.getElementById('modal-date-text').innerText = new Date(post.created_at).toLocaleString('zh-TW');
+            document.getElementById('modal-date-text').innerText = `${new Date(post.created_at).toLocaleString('zh-TW')} (直播時長: ${formatDuration(post.duration)})`;
             document.getElementById('modal-content-text').innerText = post.content || '';
 
             const channels = post.channels || [];
