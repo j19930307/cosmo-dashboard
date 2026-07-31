@@ -167,9 +167,180 @@
             gap: 28px;
         }
 
-        @media (max-width: 900px) {
+        /* 手機版分頁切換列 */
+        .mobile-tab-switch {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            html, body {
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            header {
+                width: 100%;
+                padding: 12px 16px;
+            }
+
+            .header-container {
+                width: 100%;
+                max-width: 100%;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .brand-title h1 {
+                font-size: 1.15rem;
+            }
+
+            .header-summary {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 6px;
+            }
+
+            .stat-pill {
+                font-size: 0.75rem;
+                padding: 7px 8px;
+                justify-content: center;
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            .stat-pill strong {
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+
+            .stat-pill:last-child {
+                grid-column: 1 / -1;
+            }
+
+            .month-bar {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 12px !important;
+                padding: 0 16px;
+                margin-top: 14px;
+            }
+
+            .month-bar > div {
+                width: 100%;
+            }
+
+            #month-chips-container {
+                overflow-x: auto;
+                flex-wrap: nowrap !important;
+                padding-bottom: 4px;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #member-dropdown, #month-dropdown {
+                width: 100% !important;
+                min-width: unset !important;
+                font-size: 1rem !important; /* 避免 iOS 手機點擊時自動放大畫面 */
+                padding: 10px 14px !important;
+            }
+
+            .filter-control {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .container {
+                padding: 0 14px;
+                margin: 16px auto;
+            }
+
+            .mobile-tab-switch {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 16px;
+                background: var(--bg-card);
+                padding: 4px;
+                border-radius: 14px;
+                border: 1px solid var(--border-glass);
+            }
+
+            .mobile-tab-btn {
+                flex: 1;
+                padding: 10px 0;
+                border: none;
+                background: transparent;
+                color: var(--text-muted);
+                font-size: 0.9rem;
+                font-weight: 700;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+            }
+
+            .mobile-tab-btn.active {
+                background: var(--accent-purple);
+                color: white;
+                box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+            }
+
             .main-layout {
                 grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            /* 手機版分頁切換：預設顯示時間紀錄，隱藏排行榜 */
+            .sidebar-card {
+                display: none;
+                padding: 16px;
+                border-radius: 20px;
+            }
+
+            .content-card {
+                display: block;
+                padding: 16px;
+                border-radius: 20px;
+            }
+
+            /* 當切換到排行榜模式時 */
+            .main-layout.show-leaderboard .sidebar-card {
+                display: block !important;
+            }
+
+            .main-layout.show-leaderboard .content-card {
+                display: none !important;
+            }
+
+            .member-list {
+                max-height: calc(100vh - 280px); /* 手機版排行榜獨佔頁面 */
+            }
+
+            .clip-row {
+                padding: 12px 14px;
+                border-radius: 14px;
+            }
+
+            .clip-header-row {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 6px !important;
+            }
+
+            .duration-pill {
+                flex-shrink: 0;
+            }
+
+            .content-meta {
+                display: none;
+            }
+
+            .sidebar-card {
+                position: static;
             }
         }
 
@@ -180,6 +351,9 @@
             border-radius: 24px;
             padding: 20px;
             backdrop-filter: blur(16px);
+            position: sticky;
+            top: 92px;
+            align-self: start;
         }
 
         .sidebar-title {
@@ -309,6 +483,11 @@
             gap: 12px;
         }
 
+        .content-meta {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
         .filter-title {
             font-size: 1.15rem;
             font-weight: 700;
@@ -330,9 +509,8 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-glass);
             border-radius: 16px;
-            padding: 16px;
+            padding: 13px 16px;
             transition: all 0.2s;
-            cursor: pointer;
             align-items: center;
         }
 
@@ -432,6 +610,38 @@
             overflow: hidden;
         }
 
+        .clip-content-line {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .clip-member-summary {
+            min-width: 0;
+        }
+
+        .load-more-wrap {
+            display: flex;
+            justify-content: center;
+            padding-top: 4px;
+        }
+
+        .load-more-btn {
+            background: rgba(139, 92, 246, 0.16);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            border-radius: 12px;
+            color: #d8b4fe;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 700;
+            padding: 11px 18px;
+        }
+
+        .load-more-btn:hover {
+            background: var(--accent-purple);
+            color: white;
+        }
+
         /* 影片播放彈窗 */
         .modal {
             position: fixed;
@@ -497,6 +707,156 @@
             padding: 60px 20px;
             color: var(--text-muted);
         }
+        /* Editorial archive theme: warm paper, ink, and a restrained evergreen accent. */
+        :root {
+            --bg-dark: #f4f1ea;
+            --bg-card: #fffdf8;
+            --bg-card-hover: #f0eee5;
+            --border-glass: #d9d7cc;
+            --text-main: #1d2924;
+            --text-muted: #68736b;
+            --accent-purple: #315b48;
+            --accent-pink: #a65c48;
+        }
+
+        body {
+            background: var(--bg-dark);
+            background-image: none;
+            color: var(--text-main);
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        header {
+            background: rgba(244, 241, 234, 0.96);
+            backdrop-filter: none;
+            border-bottom-color: #d9d7cc;
+        }
+
+        .brand-logo {
+            background: #315b48;
+            border-radius: 8px;
+            box-shadow: none;
+        }
+
+        .brand-title h1 {
+            color: #1d2924;
+            font-family: Georgia, 'Noto Serif TC', serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: none;
+            -webkit-text-fill-color: currentColor;
+        }
+
+        .stat-pill, .month-chip, #member-dropdown, .sort-switch {
+            background: #fffdf8 !important;
+            border-color: #d9d7cc !important;
+            box-shadow: none !important;
+            color: #526158 !important;
+        }
+
+        .stat-pill strong, #member-dropdown { color: #1d2924 !important; }
+        .month-chip { border-radius: 8px; }
+        .month-chip:hover, .month-chip.active, .sort-btn.active, .mobile-tab-btn.active {
+            background: #315b48 !important;
+            border-color: #315b48 !important;
+            box-shadow: none !important;
+            color: #fffdf8 !important;
+        }
+
+        .sidebar-card, .content-card {
+            background: #fffdf8;
+            border-color: #d9d7cc;
+            border-radius: 12px;
+            box-shadow: none;
+            backdrop-filter: none;
+        }
+
+        .member-item, .clip-row {
+            background: transparent;
+            border-color: #e4e1d8;
+            border-radius: 8px;
+        }
+
+        .member-item:hover, .member-item.active, .clip-row:hover {
+            background: #edf1eb;
+            border-color: #8eaa9b;
+            transform: none;
+        }
+
+        .clip-date, .badge-main { color: #315b48; }
+        .clip-text-content { color: #4f5b53; }
+        .duration-pill {
+            background: #edf1eb !important;
+            color: #315b48 !important;
+            border-color: #b9c9bd !important;
+        }
+
+        .member-tag {
+            background: #f0eee7;
+            border-color: #d9d7cc;
+            border-radius: 6px;
+            color: #405047;
+        }
+
+        .load-more-btn {
+            background: #315b48;
+            border-color: #315b48;
+            border-radius: 8px;
+            box-shadow: none;
+            color: #fffdf8;
+        }
+
+        .load-more-btn:hover { background: #244535; }
+
+        /* Collection tracker palette: matte charcoal, steel blue, and a single signal green. */
+        :root {
+            --bg-dark: #0d0e10;
+            --bg-card: #181a1e;
+            --bg-card-hover: #202329;
+            --border-glass: #2a2d32;
+            --text-main: #f1f3f2;
+            --text-muted: #9299a1;
+            --accent-purple: #607fa0;
+            --accent-pink: #607fa0;
+        }
+
+        body { background: #0d0e10; color: #f1f3f2; }
+        header { background: #0d0e10; border-bottom-color: #2a2d32; }
+        .brand-logo { background: #607fa0; color: #f1f3f2; }
+        .brand-title h1 { color: #f1f3f2; }
+        .stat-pill, .month-chip, #member-dropdown, .sort-switch {
+            background: #181a1e !important;
+            border-color: #2a2d32 !important;
+            color: #9299a1 !important;
+        }
+        .stat-pill strong, #member-dropdown { color: #f1f3f2 !important; }
+        .month-chip:hover, .month-chip.active, .sort-btn.active, .mobile-tab-btn.active {
+            background: #607fa0 !important;
+            border-color: #607fa0 !important;
+            color: #f1f3f2 !important;
+        }
+        .sidebar-card, .content-card { background: #181a1e; border-color: #2a2d32; }
+        .member-item, .clip-row { background: #181a1e; border-color: #2a2d32; }
+        .member-item:hover, .member-item.active, .clip-row:hover { background: #202329; border-color: #3a4148; }
+        .clip-date, .badge-main { color: #8eacd0; }
+        .clip-text-content { color: #d4d8dc; }
+        .duration-pill { background: #202a34 !important; color: #a9c4df !important; border-color: #3b536a !important; }
+        .member-tag { background: #25282d; border-color: #383c42; color: #d4d8dc; }
+        .load-more-btn { background: #607fa0; border-color: #607fa0; color: #f1f3f2; }
+        .load-more-btn:hover { background: #7896b5; }
+        .filters-bar { justify-content: flex-start; gap: 12px; }
+        .filter-control { display: flex; align-items: center; gap: 8px; }
+        .filter-control select {
+            min-width: 190px;
+            padding: 9px 34px 9px 12px;
+            border: 1px solid #2a2d32;
+            border-radius: 8px;
+            background: #181a1e;
+            color: #f1f3f2;
+            font: inherit;
+            outline: none;
+        }
+        .filter-control select:focus { border-color: #607fa0; }
     </style>
 </head>
 <body>
@@ -520,23 +880,35 @@
     </header>
 
     <!-- 月份與成員篩選列 -->
-    <div class="month-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <div class="month-label"><i class="fa-regular fa-calendar-days"></i> 月份篩選:</div>
-            <div class="month-chip active" onclick="selectMonth(null)" id="chip-month-all">全部月份</div>
-            <div id="month-chips-container" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+    <div class="month-bar filters-bar">
+        <div class="filter-control">
+            <label class="month-label" for="month-dropdown"><i class="fa-regular fa-calendar-days"></i> 月份</label>
+            <select id="month-dropdown" onchange="selectMonth(this.value === 'all' ? null : this.value)">
+                <option value="all">所有月份</option>
+            </select>
         </div>
 
-        <div style="display:flex; align-items:center; gap:10px;">
-            <div class="month-label"><i class="fa-solid fa-user"></i> 成員篩選:</div>
-            <select id="member-dropdown" onchange="selectMember(this.value === 'all' ? null : this.value)" style="background:var(--bg-card); border:1px solid var(--border-glass); color:white; padding:8px 16px; border-radius:20px; font-size:0.88rem; outline:none; cursor:pointer; min-width:180px;">
-                <option value="all">全體成員 (所有直播)</option>
+        <div class="filter-control">
+            <label class="month-label" for="member-dropdown"><i class="fa-solid fa-user"></i> 成員</label>
+            <select id="member-dropdown" onchange="selectMember(this.value === 'all' ? null : this.value)">
+                <option value="all">全體成員（所有直播）</option>
             </select>
         </div>
     </div>
 
     <div class="container">
-        <div class="main-layout">
+
+        <!-- 手機版專屬分頁切換列 -->
+        <div class="mobile-tab-switch">
+            <button class="mobile-tab-btn active" id="mtab-timeline" onclick="switchMobileTab('timeline')">
+                <i class="fa-solid fa-clock-rotate-left"></i> 直播時間紀錄
+            </button>
+            <button class="mobile-tab-btn" id="mtab-leaderboard" onclick="switchMobileTab('leaderboard')">
+                <i class="fa-solid fa-trophy"></i> 成員排行榜
+            </button>
+        </div>
+
+        <div class="main-layout" id="main-layout">
             
             <!-- 側邊欄：成員次數/時長排行榜 -->
             <div class="sidebar-card">
@@ -559,10 +931,14 @@
                     <div class="filter-title" id="current-filter-title">
                         <i class="fa-solid fa-clock-rotate-left"></i> 所有 Live-Clip 時間紀錄
                     </div>
+                    <div class="content-meta" id="timeline-result-count" aria-live="polite"></div>
                 </div>
 
                 <div class="clips-timeline" id="clips-timeline-container">
                     <!-- 動態注入影片列表 -->
+                </div>
+                <div class="load-more-wrap">
+                    <button class="load-more-btn" id="load-more-clips" type="button" onclick="loadMoreClips()" hidden>載入更多</button>
                 </div>
             </div>
 
@@ -593,6 +969,8 @@
         let selectedMember = null;
         let sortBy = 'count'; // 'count' 或 'duration'
         let memberStats = [];
+        const PAGE_SIZE = 40;
+        let visibleClipCount = PAGE_SIZE;
 
         // 格式化秒數為 小時/分鐘/秒 (完整保留秒數，不截斷)
         function formatDuration(seconds) {
@@ -608,6 +986,12 @@
                 return `${m} 分 ${s} 秒`;
             }
             return `${s} 秒`;
+        }
+
+        function formatSummaryDuration(seconds) {
+            if (!seconds || seconds <= 0) return '0 小時';
+            const hours = seconds / 3600;
+            return `${hours >= 10 ? Math.round(hours) : hours.toFixed(1)} 小時`;
         }
 
         async function init() {
@@ -636,37 +1020,29 @@
             }
         }
 
-        // 建立動態月份晶片按鈕
+        // 建立動態月份選單
         function buildMonthChips() {
             const months = new Set();
             allLiveClips.forEach(post => {
                 if (post.created_at) {
                     const date = new Date(post.created_at);
-                    const yyyyMm = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                    months.add(yyyyMm);
+                    months.add(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`);
                 }
             });
 
             const sortedMonths = Array.from(months).sort().reverse();
-            const container = document.getElementById('month-chips-container');
-
-            container.innerHTML = sortedMonths.map(m => {
+            const dropdown = document.getElementById('month-dropdown');
+            dropdown.innerHTML = `<option value="all">所有月份</option>` + sortedMonths.map(m => {
                 const [y, mm] = m.split('-');
-                return `<div class="month-chip" id="chip-month-${m}" onclick="selectMonth('${m}')">${y}年${parseInt(mm)}月</div>`;
+                return `<option value="${m}">${y} 年 ${parseInt(mm)} 月</option>`;
             }).join('');
         }
 
         // 選擇月份
         function selectMonth(monthStr) {
             selectedMonth = monthStr;
-            document.querySelectorAll('.month-chip').forEach(el => el.classList.remove('active'));
-            if (monthStr === null) {
-                document.getElementById('chip-month-all').classList.add('active');
-            } else {
-                const chip = document.getElementById(`chip-month-${monthStr}`);
-                if (chip) chip.classList.add('active');
-            }
-
+            const dropdown = document.getElementById('month-dropdown');
+            if (dropdown) dropdown.value = monthStr || 'all';
             applyMonthFilter();
         }
 
@@ -695,11 +1071,11 @@
             // 更新頂部總時長與總次數
             const totalSec = monthFilteredClips.reduce((sum, p) => sum + (p.duration || 0), 0);
             document.getElementById('total-live-clips').innerText = monthFilteredClips.length;
-            document.getElementById('total-live-duration').innerText = formatDuration(totalSec);
+            document.getElementById('total-live-duration').innerText = formatSummaryDuration(totalSec);
 
             calculateMemberStats();
             renderSidebar();
-            renderTimeline();
+            renderTimeline({ reset: true });
         }
 
         // 計算成員直播次數與總時長 (解析 videoItem.channels)
@@ -797,6 +1173,26 @@
             container.innerHTML = html;
         }
 
+        let activeMobileTab = 'timeline';
+
+        // 手機版分頁切換
+        function switchMobileTab(tab) {
+            activeMobileTab = tab;
+            const layout = document.getElementById('main-layout');
+            const btnTimeline = document.getElementById('mtab-timeline');
+            const btnLeaderboard = document.getElementById('mtab-leaderboard');
+
+            if (tab === 'leaderboard') {
+                layout.classList.add('show-leaderboard');
+                if (btnLeaderboard) btnLeaderboard.classList.add('active');
+                if (btnTimeline) btnTimeline.classList.remove('active');
+            } else {
+                layout.classList.remove('show-leaderboard');
+                if (btnTimeline) btnTimeline.classList.add('active');
+                if (btnLeaderboard) btnLeaderboard.classList.remove('active');
+            }
+        }
+
         // 點擊選擇成員
         function selectMember(name) {
             selectedMember = name;
@@ -807,69 +1203,71 @@
                 dropdown.value = name || 'all';
             }
 
+            // 在手機上點選成員時，自動跳轉回「直播時間紀錄」分頁
+            if (window.innerWidth <= 768) {
+                switchMobileTab('timeline');
+            }
+
             renderSidebar();
+            renderTimeline({ reset: true });
+        }
+
+        function loadMoreClips() {
+            visibleClipCount += PAGE_SIZE;
             renderTimeline();
         }
 
         // 渲染右側 Live-Clip 時間列表
-        function renderTimeline() {
+        function renderTimeline({ reset = false } = {}) {
             const container = document.getElementById('clips-timeline-container');
             const titleEl = document.getElementById('current-filter-title');
+            const resultCount = document.getElementById('timeline-result-count');
+            const loadMoreButton = document.getElementById('load-more-clips');
+            const monthText = selectedMonth ? `${selectedMonth.split('-')[0]}年${parseInt(selectedMonth.split('-')[1])}月` : '所有月份';
 
-            let monthText = selectedMonth ? `${selectedMonth.split('-')[0]}年${parseInt(selectedMonth.split('-')[1])}月` : '所有月份';
-            if (selectedMember) {
-                titleEl.innerHTML = `<i class="fa-solid fa-user-check"></i> ${selectedMember} 參與的 Live-Clip 紀錄 (${monthText})`;
-            } else {
-                titleEl.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> Live-Clip 時間紀錄 (${monthText})`;
-            }
+            titleEl.innerHTML = selectedMember
+                ? `<i class="fa-solid fa-user-check"></i> ${selectedMember} 參與的 Live-Clip 紀錄 (${monthText})`
+                : `<i class="fa-solid fa-clock-rotate-left"></i> Live-Clip 時間紀錄 (${monthText})`;
 
-            // 篩選包含選定成員的 Live-Clips
             const filteredClips = monthFilteredClips.filter(post => {
                 if (!selectedMember) return true;
                 const channels = post.channels || [];
-                if (channels.length > 0) {
-                    return channels.some(ch => ch.name === selectedMember);
-                }
-                return post.author_name === selectedMember;
+                return channels.length > 0 ? channels.some(ch => ch.name === selectedMember) : post.author_name === selectedMember;
             });
 
+            if (reset) visibleClipCount = PAGE_SIZE;
+            const visibleClips = filteredClips.slice(0, visibleClipCount);
+            resultCount.textContent = `顯示 ${visibleClips.length} / ${filteredClips.length} 筆`;
+            loadMoreButton.hidden = visibleClips.length >= filteredClips.length;
+
             if (filteredClips.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fa-solid fa-video-slash" style="font-size:36px;margin-bottom:12px;"></i>
-                        <p>尚無符合條件的 Live-Clip 紀錄</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-video-slash" style="font-size:36px;margin-bottom:12px;"></i><p>尚無符合條件的 Live-Clip 紀錄</p></div>`;
                 return;
             }
 
-            container.innerHTML = filteredClips.map(post => {
+            container.innerHTML = visibleClips.map(post => {
                 const dateStr = post.created_at ? new Date(post.created_at).toLocaleString('zh-TW', {
                     year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', weekday: 'short'
                 }) : '';
-
                 const channels = post.channels || [];
+                const members = channels.length ? channels : [{ name: post.author_name || 'Artist', primaryColorHex: '#8b5cf6' }];
 
                 return `
-                    <div class="clip-row">
+                    <article class="clip-row">
                         <div class="clip-details">
-                            <div class="clip-header-row" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                            <div class="clip-header-row" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
                                 <div class="clip-date"><i class="fa-regular fa-calendar"></i> ${dateStr}</div>
                                 <div class="duration-pill" style="background:rgba(139, 92, 246, 0.2); color:#c084fc; border:1px solid rgba(139, 92, 246, 0.4); font-size:0.78rem; font-weight:700; padding:3px 10px; border-radius:12px; display:flex; align-items:center; gap:4px;">
-                                    <i class="fa-solid fa-stopwatch"></i> 直播時長: ${formatDuration(post.duration)}
+                                    <i class="fa-solid fa-stopwatch"></i> ${formatDuration(post.duration)}
                                 </div>
                             </div>
-                            <div class="clip-text-content" style="margin-top:4px;">${post.content || 'Live 直播紀錄'}</div>
-                            <div class="clip-participating-members" style="margin-top:6px;">
-                                ${channels.map(ch => `
-                                    <span class="member-tag" onclick="selectMember('${ch.name}')" style="cursor:pointer;" title="點擊篩選 ${ch.name}">
-                                        <span class="member-dot" style="background:${ch.primaryColorHex || '#8b5cf6'}"></span>
-                                        ${ch.name}
-                                    </span>
-                                `).join('')}
+                            <div class="clip-text-content clip-content-line">${post.content || 'Live 直播紀錄'}</div>
+                            <div class="clip-participating-members clip-member-summary">
+                                ${members.slice(0, 3).map(ch => `<span class="member-tag" onclick="selectMember('${ch.name}')" style="cursor:pointer;" title="點擊篩選 ${ch.name}"><span class="member-dot" style="background:${ch.primaryColorHex || '#8b5cf6'}"></span>${ch.name}</span>`).join('')}
+                                ${members.length > 3 ? `<span class="member-tag">+${members.length - 3}</span>` : ''}
                             </div>
                         </div>
-                    </div>
+                    </article>
                 `;
             }).join('');
         }
