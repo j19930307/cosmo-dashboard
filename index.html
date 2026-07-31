@@ -519,11 +519,20 @@
         </div>
     </header>
 
-    <!-- 月份選單 -->
-    <div class="month-bar">
-        <div class="month-label"><i class="fa-regular fa-calendar-days"></i> 月份篩選:</div>
-        <div class="month-chip active" onclick="selectMonth(null)" id="chip-month-all">全部月份</div>
-        <div id="month-chips-container" style="display:flex; gap:10px;"></div>
+    <!-- 月份與成員篩選列 -->
+    <div class="month-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <div class="month-label"><i class="fa-regular fa-calendar-days"></i> 月份篩選:</div>
+            <div class="month-chip active" onclick="selectMonth(null)" id="chip-month-all">全部月份</div>
+            <div id="month-chips-container" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px;">
+            <div class="month-label"><i class="fa-solid fa-user"></i> 成員篩選:</div>
+            <select id="member-dropdown" onchange="selectMember(this.value === 'all' ? null : this.value)" style="background:var(--bg-card); border:1px solid var(--border-glass); color:white; padding:8px 16px; border-radius:20px; font-size:0.88rem; outline:none; cursor:pointer; min-width:180px;">
+                <option value="all">全體成員 (所有直播)</option>
+            </select>
+        </div>
     </div>
 
     <div class="container">
@@ -585,17 +594,20 @@
         let sortBy = 'count'; // 'count' 或 'duration'
         let memberStats = [];
 
-        // 格式化秒數為 小時/分鐘/秒
+        // 格式化秒數為 小時/分鐘/秒 (完整保留秒數，不截斷)
         function formatDuration(seconds) {
-            if (!seconds || seconds <= 0) return '0 分';
+            if (!seconds || seconds <= 0) return '0 秒';
             const h = Math.floor(seconds / 3600);
             const m = Math.floor((seconds % 3600) / 60);
             const s = seconds % 60;
 
             if (h > 0) {
-                return `${h} 小時 ${m} 分`;
+                return `${h} 小時 ${m} 分 ${s} 秒`;
             }
-            return `${m} 分 ${s} 秒`;
+            if (m > 0) {
+                return `${m} 分 ${s} 秒`;
+            }
+            return `${s} 秒`;
         }
 
         async function init() {
@@ -738,6 +750,16 @@
                 });
 
             document.getElementById('total-members-count').innerText = memberStats.length;
+
+            // 動態更新頂部成員下拉選單
+            const dropdown = document.getElementById('member-dropdown');
+            if (dropdown) {
+                let optionsHtml = `<option value="all" ${selectedMember === null ? 'selected' : ''}>全體成員 (所有直播)</option>`;
+                optionsHtml += memberStats.map(m => `
+                    <option value="${m.name}" ${selectedMember === m.name ? 'selected' : ''}>${m.name} (${m.count} 次)</option>
+                `).join('');
+                dropdown.innerHTML = optionsHtml;
+            }
         }
 
         // 渲染側邊欄成員排行榜
@@ -778,6 +800,13 @@
         // 點擊選擇成員
         function selectMember(name) {
             selectedMember = name;
+
+            // 同步下拉選單的值
+            const dropdown = document.getElementById('member-dropdown');
+            if (dropdown) {
+                dropdown.value = name || 'all';
+            }
+
             renderSidebar();
             renderTimeline();
         }
@@ -815,8 +844,6 @@
             }
 
             container.innerHTML = filteredClips.map(post => {
-                const videoMedia = (post.media || []).find(m => m.kind === 'video') || (post.media || [])[0];
-                const videoUrl = videoMedia ? videoMedia.url : '';
                 const dateStr = post.created_at ? new Date(post.created_at).toLocaleString('zh-TW', {
                     year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', weekday: 'short'
                 }) : '';
@@ -824,17 +851,18 @@
                 const channels = post.channels || [];
 
                 return `
-                    <div class="clip-row" onclick="openModal(${post.id})">
-                        <div class="video-thumb">
-                            ${videoUrl ? `<video src="${videoUrl}#t=0.5" preload="metadata"></video><div class="play-overlay-mini"><i class="fa-solid fa-play"></i></div>` : ''}
-                            <div class="duration-badge">${formatDuration(post.duration)}</div>
-                        </div>
+                    <div class="clip-row">
                         <div class="clip-details">
-                            <div class="clip-date"><i class="fa-regular fa-calendar"></i> ${dateStr}</div>
-                            <div class="clip-text-content">${post.content || 'Live 直播紀錄'}</div>
-                            <div class="clip-participating-members">
+                            <div class="clip-header-row" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                                <div class="clip-date"><i class="fa-regular fa-calendar"></i> ${dateStr}</div>
+                                <div class="duration-pill" style="background:rgba(139, 92, 246, 0.2); color:#c084fc; border:1px solid rgba(139, 92, 246, 0.4); font-size:0.78rem; font-weight:700; padding:3px 10px; border-radius:12px; display:flex; align-items:center; gap:4px;">
+                                    <i class="fa-solid fa-stopwatch"></i> 直播時長: ${formatDuration(post.duration)}
+                                </div>
+                            </div>
+                            <div class="clip-text-content" style="margin-top:4px;">${post.content || 'Live 直播紀錄'}</div>
+                            <div class="clip-participating-members" style="margin-top:6px;">
                                 ${channels.map(ch => `
-                                    <span class="member-tag">
+                                    <span class="member-tag" onclick="selectMember('${ch.name}')" style="cursor:pointer;" title="點擊篩選 ${ch.name}">
                                         <span class="member-dot" style="background:${ch.primaryColorHex || '#8b5cf6'}"></span>
                                         ${ch.name}
                                     </span>
@@ -844,37 +872,6 @@
                     </div>
                 `;
             }).join('');
-        }
-
-        // 開啟 Modal
-        function openModal(postId) {
-            const post = allLiveClips.find(p => p.id === postId);
-            if (!post) return;
-
-            const modal = document.getElementById('video-modal');
-            const videoBox = document.getElementById('modal-video-box');
-            const videoMedia = (post.media || []).find(m => m.kind === 'video') || (post.media || [])[0];
-            const videoUrl = videoMedia ? videoMedia.url : '';
-
-            videoBox.innerHTML = videoUrl ? `<video src="${videoUrl}" controls autoplay></video>` : '';
-
-            document.getElementById('modal-date-text').innerText = `${new Date(post.created_at).toLocaleString('zh-TW')} (直播時長: ${formatDuration(post.duration)})`;
-            document.getElementById('modal-content-text').innerText = post.content || '';
-
-            const channels = post.channels || [];
-            document.getElementById('modal-tags').innerHTML = channels.map(ch => `
-                <span class="member-tag">
-                    <span class="member-dot" style="background:${ch.primaryColorHex || '#8b5cf6'}"></span>
-                    ${ch.name}
-                </span>
-            `).join('');
-
-            modal.classList.add('open');
-        }
-
-        function closeModal() {
-            document.getElementById('video-modal').classList.remove('open');
-            document.getElementById('modal-video-box').innerHTML = '';
         }
 
         window.addEventListener('DOMContentLoaded', init);
