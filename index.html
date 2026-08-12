@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tripleS Cosmo Live-Clip 次數與時長統計 (by 月份)</title>
-    <meta name="description" content="tripleS Cosmo Room Live Clip 各成員直播次數與總直播時長統計（支援月份篩選）">
+    <title>tripleS Cosmo Dashboard | 直播 · 行程 · 官方公告</title>
+    <meta name="description" content="tripleS Cosmo 綜合數據儀表板：即時統計直播次數與時長、藝人最新行程行事曆、官方公告與置頂規範資訊。">
     
     <!-- Google Fonts & Supabase JS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -642,22 +642,23 @@
             color: white;
         }
 
-        /* 影片播放彈窗 */
+        /* 影片與公告詳情彈窗 (Modal) */
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(5, 7, 15, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(10, 12, 16, 0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s;
+            transition: opacity 0.25s ease-in-out;
             padding: 20px;
         }
 
@@ -667,28 +668,38 @@
         }
 
         .modal-content {
-            background: #121629;
-            border: 1px solid var(--border-glass);
-            border-radius: 24px;
+            background: #181a1e;
+            border: 1px solid #2a2d32;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            border-radius: 16px;
             width: 100%;
-            max-width: 750px;
+            max-width: 780px;
             overflow: hidden;
             position: relative;
         }
 
         .close-modal {
             position: absolute;
-            top: 14px;
-            right: 14px;
-            width: 34px;
-            height: 34px;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            font-size: 16px;
+            background: #25282d;
+            border: 1px solid #3b536a;
+            color: #9299a1;
+            font-size: 15px;
             cursor: pointer;
             z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .close-modal:hover {
+            background: #607fa0;
+            color: #ffffff;
+            border-color: #607fa0;
         }
 
         .modal-video-box video {
@@ -699,7 +710,28 @@
         }
 
         .modal-body {
-            padding: 20px;
+            padding: 24px;
+        }
+
+        .copy-content-btn {
+            background: #25282d;
+            border: 1px solid #3b536a;
+            color: #a9c4df;
+            padding: 5px 14px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .copy-content-btn:hover {
+            background: #607fa0;
+            color: #ffffff;
+            border-color: #607fa0;
+            box-shadow: 0 0 10px rgba(96, 127, 160, 0.4);
         }
 
         .empty-state {
@@ -857,6 +889,254 @@
             outline: none;
         }
         .filter-control select:focus { border-color: #607fa0; }
+        /* === 藝人行程 (Artist Schedules) 樣式 === */
+        .main-nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .nav-tab-btn {
+            background: #181a1e;
+            border: 1px solid #2a2d32;
+            color: #9299a1;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-tab-btn:hover, .nav-tab-btn.active {
+            background: #607fa0 !important;
+            border-color: #607fa0 !important;
+            color: #f1f3f2 !important;
+            box-shadow: 0 0 12px rgba(96, 127, 160, 0.4);
+        }
+        .nav-badge {
+            background: #ec4899;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+        .schedules-view {
+            max-width: 1240px;
+            margin: 24px auto;
+            padding: 0 20px;
+        }
+        .schedules-sub-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .schedule-tab-switch {
+            display: flex;
+            gap: 8px;
+            background: #181a1e;
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid #2a2d32;
+        }
+        .sched-subtab-btn {
+            background: transparent;
+            border: none;
+            color: #9299a1;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sched-subtab-btn.active {
+            background: #25282d;
+            color: #f1f3f2;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .schedules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .schedule-card {
+            background: #181a1e;
+            border: 1px solid #2a2d32;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+        .schedule-card:hover {
+            background: #202329;
+            border-color: #3b536a;
+            transform: translateY(-2px);
+        }
+        .sched-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .sched-date {
+            font-size: 0.85rem;
+            color: #8eacd0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sched-status-tag {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+        .sched-status-upcoming {
+            background: rgba(236, 72, 153, 0.18);
+            color: #f472b6;
+            border: 1px solid rgba(236, 72, 153, 0.4);
+        }
+        .sched-status-past {
+            background: rgba(146, 153, 161, 0.15);
+            color: #9299a1;
+            border: 1px solid rgba(146, 153, 161, 0.3);
+        }
+        .sched-title {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: #f1f3f2;
+            line-height: 1.4;
+        }
+        .sched-content {
+            font-size: 0.88rem;
+            color: #b0b7c0;
+            line-height: 1.5;
+        }
+        .sched-place {
+            font-size: 0.85rem;
+            color: #34d399;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(52, 211, 153, 0.1);
+            padding: 4px 10px;
+            border-radius: 8px;
+            width: fit-content;
+            border: 1px solid rgba(52, 211, 153, 0.25);
+        }
+        .sched-members-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+            align-items: center;
+        }
+        .sched-member-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #25282d;
+            border: 1px solid #383c42;
+            border-radius: 16px;
+            padding: 3px 10px 3px 4px;
+            font-size: 0.8rem;
+            color: #d4d8dc;
+        }
+        .sched-member-avatar {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    
+        /* === 官方公告 (Notices) 樣式 === */
+        .notices-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .notice-card {
+            background: #181a1e;
+            border: 1px solid #2a2d32;
+            border-radius: 12px;
+            padding: 18px 22px;
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .notice-card:hover {
+            background: #202329;
+            border-color: #607fa0;
+            transform: translateY(-2px);
+        }
+        .notice-card.is-pinned {
+            border-color: rgba(245, 158, 11, 0.4);
+            background: linear-gradient(135deg, #181a1e 0%, rgba(245, 158, 11, 0.05) 100%);
+        }
+        .notice-card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+        }
+        .notice-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .notice-date {
+            font-size: 0.83rem;
+            color: #8eacd0;
+            font-weight: 600;
+        }
+        .notice-pinned-badge {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .notice-title {
+            font-size: 1.02rem;
+            font-weight: 700;
+            color: #f1f3f2;
+            line-height: 1.4;
+        }
+        .notice-arrow {
+            color: #607fa0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.2s, color 0.2s;
+        }
+        .notice-card:hover .notice-arrow {
+            color: #8eacd0;
+            transform: translateX(4px);
+        }
+
     </style>
 </head>
 <body>
@@ -865,13 +1145,25 @@
     <header>
         <div class="header-container">
             <div class="brand">
-                <div class="brand-logo"><i class="fa-solid fa-video"></i></div>
+                <div class="brand-logo" id="brand-logo-icon"><i class="fa-solid fa-video"></i></div>
                 <div class="brand-title">
-                    <h1>tripleS Live-Clip 直播統計</h1>
+                    <h1 id="page-main-title">tripleS Live-Clip 直播統計</h1>
+                    <div class="main-nav-tabs">
+                        <button class="nav-tab-btn active" id="nav-tab-live" onclick="switchNavTab('live')">
+                            <i class="fa-solid fa-video"></i> Live 直播統計
+                        </button>
+                        <button class="nav-tab-btn" id="nav-tab-schedules" onclick="switchNavTab('schedules')">
+                            <i class="fa-regular fa-calendar-days"></i> 藝人行程
+                        </button>
+                        <button class="nav-tab-btn" id="nav-tab-notices" onclick="switchNavTab('notices')">
+                            <i class="fa-solid fa-bullhorn"></i> 官方公告
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="header-summary">
+            <!-- 動態頂部統計摘要 Pills -->
+            <div class="header-summary" id="header-summary-container">
                 <div class="stat-pill"><i class="fa-solid fa-clapperboard"></i> 總次數: <strong id="total-live-clips">0</strong> 次</div>
                 <div class="stat-pill"><i class="fa-solid fa-clock"></i> 總時長: <strong id="total-live-duration">0 小時</strong></div>
                 <div class="stat-pill"><i class="fa-solid fa-user-group"></i> 成員數: <strong id="total-members-count">0</strong> 位</div>
@@ -879,19 +1171,31 @@
         </div>
     </header>
 
-    <!-- 月份與成員篩選列 -->
+    <!-- 月份與成員動態篩選列 -->
     <div class="month-bar filters-bar">
-        <div class="filter-control">
+        <!-- Live 直播專屬: 月份篩選 -->
+        <div class="filter-control" id="month-filter-wrap">
             <label class="month-label" for="month-dropdown"><i class="fa-regular fa-calendar-days"></i> 月份</label>
             <select id="month-dropdown" onchange="selectMonth(this.value === 'all' ? null : this.value)">
                 <option value="all">所有月份</option>
             </select>
         </div>
 
+        <!-- 藝人行程專屬: 狀態篩選 (即將到來 / 過往行程 / 全部) -->
+        <div class="filter-control" id="schedule-status-filter-wrap" style="display: none;">
+            <label class="month-label" for="schedule-status-dropdown"><i class="fa-solid fa-list-check"></i> 行程狀態</label>
+            <select id="schedule-status-dropdown" onchange="switchScheduleSubtab(this.value)">
+                <option value="upcoming">📌 即將到來</option>
+                <option value="past">⏳ 過往行程</option>
+                <option value="all">🌐 全部行程</option>
+            </select>
+        </div>
+
+        <!-- 共通: 成員篩選 (同時適用於直播與行程) -->
         <div class="filter-control">
             <label class="month-label" for="member-dropdown"><i class="fa-solid fa-user"></i> 成員</label>
             <select id="member-dropdown" onchange="selectMember(this.value === 'all' ? null : this.value)">
-                <option value="all">全體成員（所有直播）</option>
+                <option value="all">全體成員 (所有項目)</option>
             </select>
         </div>
     </div>
@@ -908,15 +1212,19 @@
             </button>
         </div>
 
+        <!-- 統一雙欄 Main Layout (適用於 Live 與 Schedules) -->
         <div class="main-layout" id="main-layout">
             
-            <!-- 側邊欄：成員次數/時長排行榜 -->
+            <!-- 側邊欄：成員排行榜 (Live: 次數/時長, Schedules: 參演次數) -->
             <div class="sidebar-card">
                 <div class="sidebar-title">
-                    <span><i class="fa-solid fa-trophy" style="color:#f59e0b;"></i> 成員排行榜</span>
-                    <div class="sort-switch">
+                    <span id="sidebar-main-title"><i class="fa-solid fa-trophy" style="color:#f59e0b;"></i> 成員排行榜</span>
+                    <div class="sort-switch" id="live-sort-switch">
                         <button class="sort-btn active" id="sort-count-btn" onclick="setSort('count')">依次數</button>
                         <button class="sort-btn" id="sort-duration-btn" onclick="setSort('duration')">依時長</button>
+                        <button class="nav-tab-btn" id="nav-tab-notices" onclick="switchNavTab('notices')">
+                            <i class="fa-solid fa-bullhorn"></i> 官方公告
+                        </button>
                     </div>
                 </div>
 
@@ -925,7 +1233,7 @@
                 </div>
             </div>
 
-            <!-- 右側內容：Live Clip 時間與影片紀錄 -->
+            <!-- 右側內容區塊 (Live 或 Schedules) -->
             <div class="content-card">
                 <div class="content-header">
                     <div class="filter-title" id="current-filter-title">
@@ -934,10 +1242,22 @@
                     <div class="content-meta" id="timeline-result-count" aria-live="polite"></div>
                 </div>
 
+                <!-- Live Clip 直播列表容器 -->
                 <div class="clips-timeline" id="clips-timeline-container">
                     <!-- 動態注入影片列表 -->
                 </div>
-                <div class="load-more-wrap">
+
+                <!-- Schedules 藝人行程卡片容器 -->
+                <div class="schedules-grid" id="schedules-grid-container" style="display: none;">
+                    <!-- 動態注入行程卡片 -->
+                </div>
+
+                <!-- Notices 官方公告列表容器 -->
+                <div class="notices-timeline" id="notices-timeline-container" style="display: none;">
+                    <!-- 動態注入公告列表 -->
+                </div>
+
+                <div class="load-more-wrap" id="load-more-wrap">
                     <button class="load-more-btn" id="load-more-clips" type="button" onclick="loadMoreClips()" hidden>載入更多</button>
                 </div>
             </div>
@@ -951,9 +1271,14 @@
             <button class="close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
             <div class="modal-video-box" id="modal-video-box"></div>
             <div class="modal-body">
-                <div id="modal-date-text" style="color:#c084fc; font-weight:600; font-size:0.85rem; margin-bottom:8px;"></div>
+                <div class="modal-top-meta" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-right:36px; flex-wrap:wrap; gap:8px;">
+                    <div id="modal-date-text" style="color:#8eacd0; font-size:0.85rem; font-weight:600;"></div>
+                    <button class="copy-content-btn" id="copy-modal-content-btn" onclick="copyModalContent()">
+                        <i class="fa-regular fa-copy"></i> 複製內文
+                    </button>
+                </div>
                 <div id="modal-tags" style="display:flex; gap:6px; margin-bottom:12px;"></div>
-                <p id="modal-content-text" style="line-height:1.5; font-size:0.95rem; color:#e5e7eb;"></p>
+                <div id="modal-content-text" style="line-height:1.5; font-size:0.95rem; color:#e5e7eb;"></div>
             </div>
         </div>
     </div>
@@ -963,28 +1288,31 @@
         const SUPABASE_KEY = "sb_publishable_lA-gW3rOIF7X4hNiUGSCCQ_U_-0wOrv";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // ===== 全局狀態 (Global State) =====
         let allLiveClips = [];
         let monthFilteredClips = [];
+        let allSchedules = [];
+        
+        let activeNavTab = 'live'; // 'live' 或 'schedules'
+        let activeScheduleSubtab = 'upcoming'; // 'upcoming', 'past', 或 'all'
+        
         let selectedMonth = null;
         let selectedMember = null;
-        let sortBy = 'count'; // 'count' 或 'duration'
+        let sortBy = 'count'; // Live 排序: 'count' 或 'duration'
+        
         let memberStats = [];
+        let scheduleMemberStats = [];
         const PAGE_SIZE = 40;
         let visibleClipCount = PAGE_SIZE;
 
-        // 格式化秒數為 小時/分鐘/秒 (完整保留秒數，不截斷)
+        // ===== 格式化工具函數 (Utility Functions) =====
         function formatDuration(seconds) {
             if (!seconds || seconds <= 0) return '0 秒';
             const h = Math.floor(seconds / 3600);
             const m = Math.floor((seconds % 3600) / 60);
             const s = seconds % 60;
-
-            if (h > 0) {
-                return `${h} 小時 ${m} 分 ${s} 秒`;
-            }
-            if (m > 0) {
-                return `${m} 分 ${s} 秒`;
-            }
+            if (h > 0) return `${h} 小時 ${m} 分 ${s} 秒`;
+            if (m > 0) return `${m} 分 ${s} 秒`;
             return `${s} 秒`;
         }
 
@@ -994,33 +1322,242 @@
             return `${hours >= 10 ? Math.round(hours) : hours.toFixed(1)} 小時`;
         }
 
+        // ===== 頁面初始化 (Init) =====
         async function init() {
             try {
-                // 讀取 room_posts 中 kind == 'live-clip' 且排除 access_type == 'all'
-                const { data, error } = await supabaseClient
+                // 1. 讀取 Live Clips 直播數據
+                const { data: liveData, error: liveError } = await supabaseClient
                     .from('room_posts')
                     .select('*')
                     .eq('kind', 'live-clip')
                     .neq('access_type', 'all')
                     .order('created_at', { ascending: false });
 
-                if (error) throw error;
-                allLiveClips = data || [];
+                if (!liveError && liveData) {
+                    allLiveClips = liveData;
+                    buildMonthChips();
+                    applyMonthFilter();
+                }
 
-                buildMonthChips();
-                applyMonthFilter();
+                // 2. 讀取 Schedules 藝人行程數據
+                await fetchSchedules();
+
+                // 3. 讀取 Notices 官方公告數據
+                await fetchNotices();
+
             } catch (err) {
-                console.error("載入失敗:", err);
-                document.getElementById('clips-timeline-container').innerHTML = `
-                    <div class="empty-state">
-                        <i class="fa-solid fa-circle-exclamation" style="font-size:36px;margin-bottom:12px;"></i>
-                        <p>載入失敗: ${err.message}</p>
-                    </div>
+                console.error("初始化載入失敗:", err);
+            }
+        }
+
+        // ===== 切換主頁籤 (Live 直播 vs. Schedules 行程 vs. Notices 公告) =====
+        async function switchNavTab(tab) {
+            activeNavTab = tab;
+            
+            // 按鈕 Status
+            const btnLive = document.getElementById('nav-tab-live');
+            const btnSched = document.getElementById('nav-tab-schedules');
+            const btnNotice = document.getElementById('nav-tab-notices');
+            if (btnLive) btnLive.classList.toggle('active', tab === 'live');
+            if (btnSched) btnSched.classList.toggle('active', tab === 'schedules');
+            if (btnNotice) btnNotice.classList.toggle('active', tab === 'notices');
+
+            // 標題與 Icon
+            const titleEl = document.getElementById('page-main-title');
+            const logoIcon = document.getElementById('brand-logo-icon');
+            if (tab === 'schedules') {
+                if (titleEl) titleEl.innerText = "tripleS 藝人行程行事曆";
+                if (logoIcon) logoIcon.innerHTML = '<i class="fa-regular fa-calendar-days"></i>';
+            } else if (tab === 'notices') {
+                if (titleEl) titleEl.innerText = "tripleS 官方公告與聲明";
+                if (logoIcon) logoIcon.innerHTML = '<i class="fa-solid fa-bullhorn"></i>';
+            } else {
+                if (titleEl) titleEl.innerText = "tripleS Live-Clip 直播統計";
+                if (logoIcon) logoIcon.innerHTML = '<i class="fa-solid fa-video"></i>';
+            }
+
+            // 側邊欄與篩選列顯示邏輯
+            const monthWrap = document.getElementById('month-filter-wrap');
+            const schedStatusWrap = document.getElementById('schedule-status-filter-wrap');
+            const memberSelect = document.getElementById('member-dropdown');
+            const memberWrap = memberSelect ? memberSelect.closest('.filter-control') : null;
+            const sidebarCard = document.querySelector('.sidebar-card');
+            const mainLayout = document.getElementById('main-layout');
+
+            if (tab === 'schedules') {
+                if (monthWrap) monthWrap.style.display = 'none';
+                if (schedStatusWrap) schedStatusWrap.style.display = 'flex';
+                if (memberWrap) memberWrap.style.display = 'flex';
+                if (sidebarCard) sidebarCard.style.display = 'block';
+                if (mainLayout) mainLayout.style.gridTemplateColumns = '';
+            } else if (tab === 'notices') {
+                if (monthWrap) monthWrap.style.display = 'none';
+                if (schedStatusWrap) schedStatusWrap.style.display = 'none';
+                if (memberWrap) memberWrap.style.display = 'none';
+                if (sidebarCard) sidebarCard.style.display = 'none';
+                if (mainLayout) mainLayout.style.gridTemplateColumns = '1fr';
+            } else {
+                if (monthWrap) monthWrap.style.display = 'flex';
+                if (schedStatusWrap) schedStatusWrap.style.display = 'none';
+                if (memberWrap) memberWrap.style.display = 'flex';
+                if (sidebarCard) sidebarCard.style.display = 'block';
+                if (mainLayout) mainLayout.style.gridTemplateColumns = '';
+            }
+
+            // 右側內容容器顯示邏輯
+            const clipsContainer = document.getElementById('clips-timeline-container');
+            const schedContainer = document.getElementById('schedules-grid-container');
+            const noticeContainer = document.getElementById('notices-timeline-container');
+            const loadMoreWrap = document.getElementById('load-more-wrap');
+
+            if (tab === 'schedules') {
+                if (clipsContainer) clipsContainer.style.display = 'none';
+                if (schedContainer) schedContainer.style.display = 'grid';
+                if (noticeContainer) noticeContainer.style.display = 'none';
+                if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+            } else if (tab === 'notices') {
+                if (clipsContainer) clipsContainer.style.display = 'none';
+                if (schedContainer) schedContainer.style.display = 'none';
+                if (noticeContainer) noticeContainer.style.display = 'flex';
+                if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+            } else {
+                if (clipsContainer) clipsContainer.style.display = 'block';
+                if (schedContainer) schedContainer.style.display = 'none';
+                if (noticeContainer) noticeContainer.style.display = 'none';
+                if (loadMoreWrap) loadMoreWrap.style.display = 'block';
+            }
+
+            // 更新 Header Summary, 側邊欄與內容
+            updateHeaderSummary();
+            updateMemberDropdown();
+            renderSidebar();
+
+            if (tab === 'schedules') {
+                renderSchedules();
+            } else if (tab === 'notices') {
+                if (allNotices.length === 0) {
+                    await fetchNotices();
+                } else {
+                    renderNotices();
+                }
+            } else {
+                renderTimeline({ reset: true });
+            }
+        }
+
+        // ===== 📅 藝人行程 (Schedules) Supabase 資料與邏輯 =====
+        async function fetchSchedules() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('artist_schedules')
+                    .select('*')
+                    .order('start_at', { ascending: true });
+
+                if (!error && data) {
+                    allSchedules = data;
+                    calculateScheduleMemberStats();
+                    updateScheduleBadges();
+                    if (activeNavTab === 'schedules') {
+                        updateHeaderSummary();
+                        updateMemberDropdown();
+                        renderSidebar();
+                        renderSchedules();
+                    }
+                }
+            } catch (e) {
+                console.warn("無法取得行程資料:", e);
+            }
+        }
+
+        function updateScheduleBadges() {
+            const now = new Date();
+            const upcoming = allSchedules.filter(s => new Date(s.end_at || s.start_at) >= now);
+            const badge = document.getElementById('upcoming-count-badge');
+            if (badge) badge.innerText = upcoming.length;
+        }
+
+        function switchScheduleSubtab(subtab) {
+            activeScheduleSubtab = subtab;
+            const dropdown = document.getElementById('schedule-status-dropdown');
+            if (dropdown) dropdown.value = subtab;
+            renderSchedules();
+        }
+
+        // ===== 計算行程參演成員統計 =====
+        function calculateScheduleMemberStats() {
+            const counts = {};
+            const meta = {};
+
+            allSchedules.forEach(s => {
+                const members = s.members || [];
+                members.forEach(m => {
+                    if (m.name) {
+                        counts[m.name] = (counts[m.name] || 0) + 1;
+                        if (!meta[m.name]) {
+                            meta[m.name] = {
+                                avatar: m.profileImageUrl || '',
+                                color: '#607fa0'
+                            };
+                        }
+                    }
+                });
+            });
+
+            scheduleMemberStats = Object.entries(counts)
+                .map(([name, count]) => ({
+                    name,
+                    count,
+                    avatar: meta[name] ? meta[name].avatar : '',
+                    color: meta[name] ? meta[name].color : '#607fa0'
+                }))
+                .sort((a, b) => b.count - a.count);
+        }
+
+        // ===== 動態更新頂部 Header Summary Pills =====
+        function updateHeaderSummary() {
+            const summaryBox = document.getElementById('header-summary-container');
+            if (!summaryBox) return;
+
+            if (activeNavTab === 'schedules') {
+                const now = new Date();
+                const upcomingCount = allSchedules.filter(s => new Date(s.end_at || s.start_at) >= now).length;
+                const pastCount = allSchedules.length - upcomingCount;
+
+                summaryBox.innerHTML = `
+                    <div class="stat-pill"><i class="fa-regular fa-calendar-check"></i> 總行程: <strong>${allSchedules.length}</strong> 筆</div>
+                    <div class="stat-pill"><i class="fa-solid fa-fire" style="color:#ec4899;"></i> 即將到來: <strong>${upcomingCount}</strong> 筆</div>
+                    <div class="stat-pill"><i class="fa-solid fa-clock-rotate-left"></i> 已結束: <strong>${pastCount}</strong> 筆</div>
+                `;
+            } else if (activeNavTab === 'notices') {
+                const pinnedCount = allNotices.filter(n => n.is_pinned).length;
+                summaryBox.innerHTML = `
+                    <div class="stat-pill"><i class="fa-solid fa-bullhorn"></i> 總公告: <strong>${allNotices.length}</strong> 則</div>
+                    <div class="stat-pill"><i class="fa-solid fa-thumbtack" style="color:#f59e0b;"></i> 置頂公告: <strong>${pinnedCount}</strong> 則</div>
+                `;
+            } else {
+                const totalSec = monthFilteredClips.reduce((sum, p) => sum + (p.duration || 0), 0);
+                summaryBox.innerHTML = `
+                    <div class="stat-pill"><i class="fa-solid fa-clapperboard"></i> 總次數: <strong>${monthFilteredClips.length}</strong> 次</div>
+                    <div class="stat-pill"><i class="fa-solid fa-clock"></i> 總時長: <strong>${formatSummaryDuration(totalSec)}</strong></div>
+                    <div class="stat-pill"><i class="fa-solid fa-user-group"></i> 成員數: <strong>${memberStats.length}</strong> 位</div>
                 `;
             }
         }
 
-        // 建立動態月份選單
+        // ===== 動態更新成員下拉選單 =====
+        function updateMemberDropdown() {
+            const dropdown = document.getElementById('member-dropdown');
+            if (!dropdown) return;
+
+            const statsList = activeNavTab === 'schedules' ? scheduleMemberStats : memberStats;
+            let optionsHtml = `<option value="all" ${selectedMember === null ? 'selected' : ''}>全體成員 (所有${activeNavTab === 'schedules' ? '行程' : '直播'})</option>`;
+            optionsHtml += statsList.map(m => `
+                <option value="${m.name}" ${selectedMember === m.name ? 'selected' : ''}>${m.name} (${m.count} ${activeNavTab === 'schedules' ? '場' : '次'})</option>
+            `).join('');
+            dropdown.innerHTML = optionsHtml;
+        }
+
+        // ===== 建立動態月份選單 =====
         function buildMonthChips() {
             const months = new Set();
             allLiveClips.forEach(post => {
@@ -1032,13 +1569,14 @@
 
             const sortedMonths = Array.from(months).sort().reverse();
             const dropdown = document.getElementById('month-dropdown');
-            dropdown.innerHTML = `<option value="all">所有月份</option>` + sortedMonths.map(m => {
-                const [y, mm] = m.split('-');
-                return `<option value="${m}">${y} 年 ${parseInt(mm)} 月</option>`;
-            }).join('');
+            if (dropdown) {
+                dropdown.innerHTML = `<option value="all">所有月份</option>` + sortedMonths.map(m => {
+                    const [y, mm] = m.split('-');
+                    return `<option value="${m}">${y} 年 ${parseInt(mm)} 月</option>`;
+                }).join('');
+            }
         }
 
-        // 選擇月份
         function selectMonth(monthStr) {
             selectedMonth = monthStr;
             const dropdown = document.getElementById('month-dropdown');
@@ -1046,16 +1584,6 @@
             applyMonthFilter();
         }
 
-        // 切換排序方式
-        function setSort(type) {
-            sortBy = type;
-            document.getElementById('sort-count-btn').classList.toggle('active', type === 'count');
-            document.getElementById('sort-duration-btn').classList.toggle('active', type === 'duration');
-            calculateMemberStats();
-            renderSidebar();
-        }
-
-        // 應用月份篩選
         function applyMonthFilter() {
             if (selectedMonth) {
                 monthFilteredClips = allLiveClips.filter(post => {
@@ -1068,17 +1596,23 @@
                 monthFilteredClips = allLiveClips;
             }
 
-            // 更新頂部總時長與總次數
-            const totalSec = monthFilteredClips.reduce((sum, p) => sum + (p.duration || 0), 0);
-            document.getElementById('total-live-clips').innerText = monthFilteredClips.length;
-            document.getElementById('total-live-duration').innerText = formatSummaryDuration(totalSec);
-
             calculateMemberStats();
-            renderSidebar();
-            renderTimeline({ reset: true });
+            if (activeNavTab === 'live') {
+                updateHeaderSummary();
+                updateMemberDropdown();
+                renderSidebar();
+                renderTimeline({ reset: true });
+            }
         }
 
-        // 計算成員直播次數與總時長 (解析 videoItem.channels)
+        function setSort(type) {
+            sortBy = type;
+            document.getElementById('sort-count-btn').classList.toggle('active', type === 'count');
+            document.getElementById('sort-duration-btn').classList.toggle('active', type === 'duration');
+            calculateMemberStats();
+            renderSidebar();
+        }
+
         function calculateMemberStats() {
             const counts = {};
             const durations = {};
@@ -1092,7 +1626,7 @@
                     const name = post.author_name || 'Artist';
                     counts[name] = (counts[name] || 0) + 1;
                     durations[name] = (durations[name] || 0) + postDuration;
-                    if (!meta[name]) meta[name] = { avatar: post.author_avatar, color: '#8b5cf6' };
+                    if (!meta[name]) meta[name] = { avatar: post.author_avatar, color: '#607fa0' };
                 } else {
                     channels.forEach(ch => {
                         const name = ch.name || post.author_name;
@@ -1102,7 +1636,7 @@
                             if (!meta[name]) {
                                 meta[name] = {
                                     avatar: ch.profileImageUrl || post.author_avatar,
-                                    color: ch.primaryColorHex || '#8b5cf6'
+                                    color: ch.primaryColorHex || '#607fa0'
                                 };
                             }
                         }
@@ -1116,108 +1650,109 @@
                     count,
                     durationSec: durations[name] || 0,
                     avatar: meta[name] ? meta[name].avatar : '',
-                    color: meta[name] ? meta[name].color : '#8b5cf6'
+                    color: meta[name] ? meta[name].color : '#607fa0'
                 }))
                 .sort((a, b) => {
-                    if (sortBy === 'duration') {
-                        return b.durationSec - a.durationSec;
-                    }
+                    if (sortBy === 'duration') return b.durationSec - a.durationSec;
                     return b.count - a.count;
                 });
-
-            document.getElementById('total-members-count').innerText = memberStats.length;
-
-            // 動態更新頂部成員下拉選單
-            const dropdown = document.getElementById('member-dropdown');
-            if (dropdown) {
-                let optionsHtml = `<option value="all" ${selectedMember === null ? 'selected' : ''}>全體成員 (所有直播)</option>`;
-                optionsHtml += memberStats.map(m => `
-                    <option value="${m.name}" ${selectedMember === m.name ? 'selected' : ''}>${m.name} (${m.count} 次)</option>
-                `).join('');
-                dropdown.innerHTML = optionsHtml;
-            }
         }
 
-        // 渲染側邊欄成員排行榜
+        // ===== 渲染側邊欄成員排行榜 =====
         function renderSidebar() {
             const container = document.getElementById('member-list-container');
-            const totalSec = monthFilteredClips.reduce((sum, p) => sum + (p.duration || 0), 0);
+            const titleEl = document.getElementById('sidebar-main-title');
+            const sortSwitch = document.getElementById('live-sort-switch');
+            if (!container) return;
 
-            let html = `
-                <div class="member-item ${selectedMember === null ? 'active' : ''}" onclick="selectMember(null)">
-                    <div class="rank-num"><i class="fa-solid fa-users"></i></div>
-                    <div class="member-info">
-                        <div class="member-name-text">全體成員 (所有直播)</div>
-                        <div class="member-sub-info">總時長: ${formatDuration(totalSec)}</div>
+            if (activeNavTab === 'schedules') {
+                if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-trophy" style="color:#f59e0b;"></i> 行程參演排行榜';
+                if (sortSwitch) sortSwitch.style.display = 'none';
+
+                let html = `
+                    <div class="member-item ${selectedMember === null ? 'active' : ''}" onclick="selectMember(null)">
+                        <div class="rank-num"><i class="fa-solid fa-users"></i></div>
+                        <div class="member-info">
+                            <div class="member-name-text">全體成員 (所有行程)</div>
+                            <div class="member-sub-info">總行程: ${allSchedules.length} 筆</div>
+                        </div>
+                        <div class="clip-count-badge">
+                            <div class="badge-main">${allSchedules.length} 場</div>
+                        </div>
                     </div>
-                    <div class="clip-count-badge">
-                        <div class="badge-main">${monthFilteredClips.length} 次</div>
+                `;
+
+                html += scheduleMemberStats.map((m, idx) => `
+                    <div class="member-item ${selectedMember === m.name ? 'active' : ''}" onclick="selectMember('${m.name}')">
+                        <div class="rank-num ${idx < 3 ? 'rank-' + (idx + 1) : ''}">${idx + 1}</div>
+                        <img class="member-avatar" src="${m.avatar}" style="border-color:${m.color}" alt="${m.name}" onerror="this.src='https://via.placeholder.com/42'">
+                        <div class="member-info">
+                            <div class="member-name-text">${m.name}</div>
+                            <div class="member-sub-info">參演行程數</div>
+                        </div>
+                        <div class="clip-count-badge">
+                            <div class="badge-main" style="color:${m.color}">${m.count} 場</div>
+                        </div>
                     </div>
-                </div>
-            `;
+                `).join('');
 
-            html += memberStats.map((m, idx) => `
-                <div class="member-item ${selectedMember === m.name ? 'active' : ''}" onclick="selectMember('${m.name}')">
-                    <div class="rank-num ${idx < 3 ? 'rank-' + (idx + 1) : ''}">${idx + 1}</div>
-                    <img class="member-avatar" src="${m.avatar}" style="border-color:${m.color}" alt="${m.name}" onerror="this.src='https://via.placeholder.com/42'">
-                    <div class="member-info">
-                        <div class="member-name-text">${m.name}</div>
-                        <div class="member-sub-info">時長: ${formatDuration(m.durationSec)}</div>
-                    </div>
-                    <div class="clip-count-badge">
-                        <div class="badge-main" style="color:${m.color}">${m.count} 次</div>
-                    </div>
-                </div>
-            `).join('');
-
-            container.innerHTML = html;
-        }
-
-        let activeMobileTab = 'timeline';
-
-        // 手機版分頁切換
-        function switchMobileTab(tab) {
-            activeMobileTab = tab;
-            const layout = document.getElementById('main-layout');
-            const btnTimeline = document.getElementById('mtab-timeline');
-            const btnLeaderboard = document.getElementById('mtab-leaderboard');
-
-            if (tab === 'leaderboard') {
-                layout.classList.add('show-leaderboard');
-                if (btnLeaderboard) btnLeaderboard.classList.add('active');
-                if (btnTimeline) btnTimeline.classList.remove('active');
+                container.innerHTML = html;
             } else {
-                layout.classList.remove('show-leaderboard');
-                if (btnTimeline) btnTimeline.classList.add('active');
-                if (btnLeaderboard) btnLeaderboard.classList.remove('active');
+                if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-trophy" style="color:#f59e0b;"></i> 成員直播排行榜';
+                if (sortSwitch) sortSwitch.style.display = 'flex';
+
+                const totalSec = monthFilteredClips.reduce((sum, p) => sum + (p.duration || 0), 0);
+
+                let html = `
+                    <div class="member-item ${selectedMember === null ? 'active' : ''}" onclick="selectMember(null)">
+                        <div class="rank-num"><i class="fa-solid fa-users"></i></div>
+                        <div class="member-info">
+                            <div class="member-name-text">全體成員 (所有直播)</div>
+                            <div class="member-sub-info">總時長: ${formatDuration(totalSec)}</div>
+                        </div>
+                        <div class="clip-count-badge">
+                            <div class="badge-main">${monthFilteredClips.length} 次</div>
+                        </div>
+                    </div>
+                `;
+
+                html += memberStats.map((m, idx) => `
+                    <div class="member-item ${selectedMember === m.name ? 'active' : ''}" onclick="selectMember('${m.name}')">
+                        <div class="rank-num ${idx < 3 ? 'rank-' + (idx + 1) : ''}">${idx + 1}</div>
+                        <img class="member-avatar" src="${m.avatar}" style="border-color:${m.color}" alt="${m.name}" onerror="this.src='https://via.placeholder.com/42'">
+                        <div class="member-info">
+                            <div class="member-name-text">${m.name}</div>
+                            <div class="member-sub-info">時長: ${formatDuration(m.durationSec)}</div>
+                        </div>
+                        <div class="clip-count-badge">
+                            <div class="badge-main" style="color:${m.color}">${m.count} 次</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = html;
             }
         }
 
-        // 點擊選擇成員
+        // ===== 點擊選擇成員 =====
         function selectMember(name) {
             selectedMember = name;
-
-            // 同步下拉選單的值
-            const dropdown = document.getElementById('member-dropdown');
-            if (dropdown) {
-                dropdown.value = name || 'all';
-            }
-
-            // 在手機上點選成員時，自動跳轉回「直播時間紀錄」分頁
-            if (window.innerWidth <= 768) {
-                switchMobileTab('timeline');
-            }
-
+            updateMemberDropdown();
             renderSidebar();
-            renderTimeline({ reset: true });
+
+            if (activeNavTab === 'schedules') {
+                renderSchedules();
+            } else {
+                renderTimeline({ reset: true });
+            }
         }
 
+        // ===== 渲染右側 Live-Clip 時間列表 =====
         function loadMoreClips() {
             visibleClipCount += PAGE_SIZE;
             renderTimeline();
         }
 
-        // 渲染右側 Live-Clip 時間列表
         function renderTimeline({ reset = false } = {}) {
             const container = document.getElementById('clips-timeline-container');
             const titleEl = document.getElementById('current-filter-title');
@@ -1225,9 +1760,11 @@
             const loadMoreButton = document.getElementById('load-more-clips');
             const monthText = selectedMonth ? `${selectedMonth.split('-')[0]}年${parseInt(selectedMonth.split('-')[1])}月` : '所有月份';
 
-            titleEl.innerHTML = selectedMember
-                ? `<i class="fa-solid fa-user-check"></i> ${selectedMember} 參與的 Live-Clip 紀錄 (${monthText})`
-                : `<i class="fa-solid fa-clock-rotate-left"></i> Live-Clip 時間紀錄 (${monthText})`;
+            if (titleEl) {
+                titleEl.innerHTML = selectedMember
+                    ? `<i class="fa-solid fa-user-check"></i> ${selectedMember} 參與的 Live-Clip 紀錄 (${monthText})`
+                    : `<i class="fa-solid fa-clock-rotate-left"></i> Live-Clip 時間紀錄 (${monthText})`;
+            }
 
             const filteredClips = monthFilteredClips.filter(post => {
                 if (!selectedMember) return true;
@@ -1237,8 +1774,8 @@
 
             if (reset) visibleClipCount = PAGE_SIZE;
             const visibleClips = filteredClips.slice(0, visibleClipCount);
-            resultCount.textContent = `顯示 ${visibleClips.length} / ${filteredClips.length} 筆`;
-            loadMoreButton.hidden = visibleClips.length >= filteredClips.length;
+            if (resultCount) resultCount.textContent = `顯示 ${visibleClips.length} / ${filteredClips.length} 筆`;
+            if (loadMoreButton) loadMoreButton.hidden = visibleClips.length >= filteredClips.length;
 
             if (filteredClips.length === 0) {
                 container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-video-slash" style="font-size:36px;margin-bottom:12px;"></i><p>尚無符合條件的 Live-Clip 紀錄</p></div>`;
@@ -1250,20 +1787,20 @@
                     year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', weekday: 'short'
                 }) : '';
                 const channels = post.channels || [];
-                const members = channels.length ? channels : [{ name: post.author_name || 'Artist', primaryColorHex: '#8b5cf6' }];
+                const members = channels.length ? channels : [{ name: post.author_name || 'Artist', primaryColorHex: '#607fa0' }];
 
                 return `
                     <article class="clip-row">
                         <div class="clip-details">
                             <div class="clip-header-row" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
                                 <div class="clip-date"><i class="fa-regular fa-calendar"></i> ${dateStr}</div>
-                                <div class="duration-pill" style="background:rgba(139, 92, 246, 0.2); color:#c084fc; border:1px solid rgba(139, 92, 246, 0.4); font-size:0.78rem; font-weight:700; padding:3px 10px; border-radius:12px; display:flex; align-items:center; gap:4px;">
+                                <div class="duration-pill" style="background:#202a34; color:#a9c4df; border:1px solid #3b536a; font-size:0.78rem; font-weight:700; padding:3px 10px; border-radius:12px; display:flex; align-items:center; gap:4px;">
                                     <i class="fa-solid fa-stopwatch"></i> ${formatDuration(post.duration)}
                                 </div>
                             </div>
                             <div class="clip-text-content clip-content-line">${post.content || 'Live 直播紀錄'}</div>
                             <div class="clip-participating-members clip-member-summary">
-                                ${members.slice(0, 3).map(ch => `<span class="member-tag" onclick="selectMember('${ch.name}')" style="cursor:pointer;" title="點擊篩選 ${ch.name}"><span class="member-dot" style="background:${ch.primaryColorHex || '#8b5cf6'}"></span>${ch.name}</span>`).join('')}
+                                ${members.slice(0, 3).map(ch => `<span class="member-tag" onclick="selectMember('${ch.name}')" style="cursor:pointer;" title="點擊篩選 ${ch.name}"><span class="member-dot" style="background:${ch.primaryColorHex || '#607fa0'}"></span>${ch.name}</span>`).join('')}
                                 ${members.length > 3 ? `<span class="member-tag">+${members.length - 3}</span>` : ''}
                             </div>
                         </div>
@@ -1272,7 +1809,336 @@
             }).join('');
         }
 
+        // ===== 依據韓國標準時間 (KST / Asia/Seoul) 格式化行程時間 =====
+        function formatKSTScheduleTime(startAtIso, endAtIso) {
+            if (!startAtIso) return '';
+            const startD = new Date(startAtIso);
+            const endD = endAtIso ? new Date(endAtIso) : null;
+            const tz = 'Asia/Seoul';
+
+            const startDayStr = startD.toLocaleDateString('zh-TW', {
+                timeZone: tz,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                weekday: 'short'
+            });
+
+            const startTimeStr = startD.toLocaleTimeString('zh-TW', {
+                timeZone: tz,
+                hour12: true,
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            if (!endD) return `${startDayStr} ${startTimeStr} (KST)`;
+
+            const endDayStr = endD.toLocaleDateString('zh-TW', {
+                timeZone: tz,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                weekday: 'short'
+            });
+
+            const endTimeStr = endD.toLocaleTimeString('zh-TW', {
+                timeZone: tz,
+                hour12: true,
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            if (startDayStr === endDayStr) {
+                return `${startDayStr} ${startTimeStr} ~ ${endTimeStr} (KST)`;
+            } else {
+                return `${startDayStr} ${startTimeStr} ~ ${endDayStr} ${endTimeStr} (KST)`;
+            }
+        }
+
+        // ===== 渲染右側 Schedules 藝人行程卡片列表 =====
+        function renderSchedules() {
+            const container = document.getElementById('schedules-grid-container');
+            const titleEl = document.getElementById('current-filter-title');
+            const resultCount = document.getElementById('timeline-result-count');
+            if (!container) return;
+
+            const now = new Date();
+            let filtered = allSchedules.filter(s => {
+                const end = new Date(s.end_at || s.start_at);
+                if (activeScheduleSubtab === 'upcoming') return end >= now;
+                if (activeScheduleSubtab === 'past') return end < now;
+                return true; // 'all'
+            });
+
+            if (selectedMember) {
+                filtered = filtered.filter(s => {
+                    const members = s.members || [];
+                    return members.some(m => m.name === selectedMember);
+                });
+            }
+
+            if (activeScheduleSubtab === 'upcoming') {
+                filtered.sort((a, b) => new Date(a.start_at) - new Date(b.start_at));
+            } else {
+                // 'past' 或 'all' (全部行程): 從最新到最舊 (NEW to OLD / DESC) 排序
+                filtered.sort((a, b) => new Date(b.start_at) - new Date(a.start_at));
+            }
+
+            if (titleEl) {
+                let subTitle = '全部行程';
+                if (activeScheduleSubtab === 'upcoming') subTitle = '即將到來行程';
+                if (activeScheduleSubtab === 'past') subTitle = '過往歷史行程';
+
+                titleEl.innerHTML = selectedMember
+                    ? `<i class="fa-regular fa-calendar-check"></i> ${selectedMember} 參演的${subTitle}`
+                    : `<i class="fa-regular fa-calendar-check"></i> tripleS 藝人行程 (${subTitle})`;
+            }
+
+            if (resultCount) {
+                resultCount.textContent = `共 ${filtered.length} 筆行程`;
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><i class="fa-regular fa-calendar-xmark" style="font-size:36px;margin-bottom:12px;"></i><p>尚無符合條件的行程紀錄</p></div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(s => {
+                const startD = new Date(s.start_at);
+                const endD = new Date(s.end_at || s.start_at);
+                // 依據韓國標準時間 (KST / Asia/Seoul) 精準格式化開始與結束時間
+                const dateRangeStr = formatKSTScheduleTime(s.start_at, s.end_at);
+                
+                let statusTagHtml = '';
+                const isEnded = endD < now;
+                if (!isEnded) {
+                    const diffDays = Math.ceil((startD - now) / (1000 * 60 * 60 * 24));
+                    let dText = diffDays <= 0 ? '🔥 今日活動' : `D-${diffDays}`;
+                    statusTagHtml = `<span class="sched-status-tag sched-status-upcoming">${dText}</span>`;
+                } else {
+                    statusTagHtml = `<span class="sched-status-tag sched-status-past">已結束</span>`;
+                }
+
+                const members = s.members || [];
+
+                return `
+                    <article class="schedule-card">
+                        <div class="sched-card-top">
+                            <div class="sched-date"><i class="fa-regular fa-clock"></i> ${dateRangeStr}</div>
+                            ${statusTagHtml}
+                        </div>
+                        <div class="sched-title">${s.title}</div>
+                        ${s.content && s.content !== s.title ? `<div class="sched-content">${s.content}</div>` : ''}
+                        ${s.place ? `<div class="sched-place"><i class="fa-solid fa-location-dot"></i> ${s.place}</div>` : ''}
+                        ${members.length > 0 ? `
+                            <div class="sched-members-row">
+                                ${members.map(m => `
+                                    <span class="sched-member-badge" onclick="selectMember('${m.name}')" style="cursor:pointer;" title="點擊篩選 ${m.name}">
+                                        <img class="sched-member-avatar" src="${m.profileImageUrl || ''}" onerror="this.src='https://via.placeholder.com/22'" alt="${m.name}">
+                                        ${m.name}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </article>
+                `;
+            }).join('');
+        }
+
+        
+        // ============================================================
+        // 📢 官方公告 (Notices) Supabase 資料抓取與渲染邏輯
+        // ============================================================
+        let allNotices = [];
+
+        async function fetchNotices() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('notices')
+                    .select('*')
+                    .order('is_pinned', { ascending: false })
+                    .order('order_index', { ascending: true })
+                    .order('created_at', { ascending: false });
+
+                if (!error && data) {
+                    allNotices = data;
+                    if (activeNavTab === 'notices') {
+                        updateHeaderSummary();
+                        renderNotices();
+                    }
+                }
+            } catch (e) {
+                console.warn("無法取得公告資料:", e);
+            }
+        }
+
+        function renderNotices() {
+            const container = document.getElementById('notices-timeline-container');
+            const titleEl = document.getElementById('current-filter-title');
+            const resultCount = document.getElementById('timeline-result-count');
+            if (!container) return;
+
+            if (titleEl) {
+                titleEl.innerHTML = `<i class="fa-solid fa-bullhorn"></i> tripleS 官方公告與聲明 (${allNotices.length} 則)`;
+            }
+
+            if (resultCount) {
+                resultCount.textContent = `共 ${allNotices.length} 則公告`;
+            }
+
+            if (allNotices.length === 0) {
+                container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><i class="fa-solid fa-circle-exclamation" style="font-size:36px;margin-bottom:12px;"></i><p>尚無官方公告紀錄</p></div>`;
+                return;
+            }
+
+            container.innerHTML = allNotices.map(n => {
+                const dateStr = n.created_at ? new Date(n.created_at).toLocaleString('zh-TW', {
+                    timeZone: 'Asia/Seoul',
+                    year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+                }) + ' (KST)' : '';
+
+                const cleanTitle = (n.title || '').replace('[PINNED]', '').trim();
+
+                return `
+                    <article class="notice-card ${n.is_pinned ? 'is-pinned' : ''}" onclick="openNoticeModal(${n.id})">
+                        <div class="notice-card-body">
+                            <div class="notice-header">
+                                <div class="notice-date"><i class="fa-regular fa-clock"></i> ${dateStr}</div>
+                                ${n.is_pinned ? `<span class="notice-pinned-badge"><i class="fa-solid fa-thumbtack"></i> 置頂公告</span>` : ''}
+                            </div>
+                            <div class="notice-title">${cleanTitle}</div>
+                        </div>
+                        <div class="notice-arrow">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('video-modal');
+            const videoBox = document.getElementById('modal-video-box');
+            if (videoBox) videoBox.innerHTML = '';
+            if (modal) modal.classList.remove('open');
+        }
+
+        function linkifyText(text) {
+            if (!text) return '';
+            const urlRegex = /(https?:\/\/[^\s<]+|www\.[^\s<]+)/g;
+            return text.replace(urlRegex, (url) => {
+                const href = url.startsWith('http') ? url : `https://${url}`;
+                return `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color:#a9c4df; background:rgba(96, 127, 160, 0.15); border:1px solid rgba(96, 127, 160, 0.3); padding:3px 10px; border-radius:6px; text-decoration:none; font-weight:600; display:inline-flex; align-items:center; gap:6px; word-break:break-all; transition:all 0.2s;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i>${url}</a>`;
+            });
+        }
+
+        let currentNoticeContentForCopy = "";
+
+        function copyModalContent() {
+            if (!currentNoticeContentForCopy) return;
+            navigator.clipboard.writeText(currentNoticeContentForCopy).then(() => {
+                const btn = document.getElementById('copy-modal-content-btn');
+                if (btn) {
+                    btn.innerHTML = '<i class="fa-solid fa-check" style="color:#34d399;"></i> 已複製！';
+                    btn.style.borderColor = '#34d399';
+                    btn.style.color = '#34d399';
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="fa-regular fa-copy"></i> 複製內文';
+                        btn.style.borderColor = '#3b536a';
+                        btn.style.color = '#a9c4df';
+                    }, 2000);
+                }
+            }).catch(err => {
+                console.error("複製失敗:", err);
+            });
+        }
+
+        function openNoticeModal(noticeId) {
+            const notice = allNotices.find(n => String(n.id) === String(noticeId));
+            if (!notice) return;
+
+            currentNoticeContentForCopy = notice.content || notice.title;
+
+            const modal = document.getElementById('video-modal');
+            const videoBox = document.getElementById('modal-video-box');
+            const dateText = document.getElementById('modal-date-text');
+            const tagsBox = document.getElementById('modal-tags');
+            const contentText = document.getElementById('modal-content-text');
+            const copyBtn = document.getElementById('copy-modal-content-btn');
+
+            if (copyBtn) copyBtn.style.display = 'inline-flex';
+
+            if (videoBox) {
+                videoBox.style.display = 'none';
+                videoBox.innerHTML = '';
+            }
+            if (dateText) {
+                const dateStr = notice.created_at ? new Date(notice.created_at).toLocaleString('zh-TW', {
+                    timeZone: 'Asia/Seoul',
+                    year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+                }) + ' (KST)' : '';
+                dateText.style.color = '#8eacd0';
+                dateText.style.fontSize = '0.85rem';
+                dateText.style.fontWeight = '600';
+                dateText.style.marginBottom = '0';
+                dateText.innerHTML = `<i class="fa-solid fa-bullhorn" style="color:#607fa0;"></i> ${notice.is_pinned ? '<span style="color:#f59e0b; font-weight:800; margin-right:4px;">[📌 置頂公告]</span>' : ''}${dateStr}`;
+            }
+
+            if (tagsBox) {
+                tagsBox.innerHTML = `
+                    <div style="font-size:1.15rem; font-weight:700; color:#f1f3f2; line-height:1.4; margin-bottom:16px; border-bottom:1px solid #2a2d32; padding-bottom:12px;">
+                        ${notice.title}
+                    </div>
+                `;
+            }
+
+            if (contentText) {
+                const rawContent = notice.content || notice.title;
+                const formattedContent = linkifyText(rawContent);
+
+                const images = notice.image_url_list || notice.imageUrlList || [];
+                let imagesHtml = '';
+                if (Array.isArray(images) && images.length > 0) {
+                    imagesHtml = `
+                        <div class="notice-images-gallery" style="margin-top:24px; display:flex; flex-direction:column; gap:16px; align-items:center;">
+                            ${images.map(imgUrl => `
+                                <img src="${imgUrl}" style="max-width:100%; border-radius:12px; border:1px solid #2a2d32; box-shadow:0 6px 20px rgba(0,0,0,0.5);" alt="Notice Attachment" loading="lazy">
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                contentText.innerHTML = `<div style="white-space: pre-wrap; font-size: 0.96rem; line-height: 1.75; color: #d1d5db; max-height: 65vh; overflow-y: auto; padding-right: 8px;">${formattedContent}${imagesHtml}</div>`;
+            }
+
+            if (modal) modal.classList.add('open');
+        }
+
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('video-modal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // ===== 手機版分頁切換 =====
+        function switchMobileTab(tab) {
+            const layout = document.getElementById('main-layout');
+            const btnTimeline = document.getElementById('mtab-timeline');
+            const btnLeaderboard = document.getElementById('mtab-leaderboard');
+
+            if (tab === 'leaderboard') {
+                if (layout) layout.classList.add('show-leaderboard');
+                if (btnLeaderboard) btnLeaderboard.classList.add('active');
+                if (btnTimeline) btnTimeline.classList.remove('active');
+            } else {
+                if (layout) layout.classList.remove('show-leaderboard');
+                if (btnTimeline) btnTimeline.classList.add('active');
+                if (btnLeaderboard) btnLeaderboard.classList.remove('active');
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', init);
-    </script>
+</script>
 </body>
 </html>

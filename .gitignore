@@ -1,0 +1,2 @@
+# Ignore database SQL migration scripts
+*.sql
