@@ -172,7 +172,7 @@
             display: none;
         }
 
-        @media (max-width: 768px) {
+                @media (max-width: 768px) {
             html, body {
                 max-width: 100%;
                 overflow-x: hidden;
@@ -180,7 +180,7 @@
 
             header {
                 width: 100%;
-                padding: 12px 16px;
+                padding: 12px 14px;
             }
 
             .header-container {
@@ -188,13 +188,39 @@
                 max-width: 100%;
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 10px;
+                gap: 12px;
+            }
+
+            .brand {
+                width: 100%;
             }
 
             .brand-title h1 {
                 font-size: 1.15rem;
+                line-height: 1.3;
             }
 
+            /* 手機版頂部導覽分頁頁籤：流暢橫向滾動 */
+            .main-nav-tabs {
+                width: 100%;
+                overflow-x: auto;
+                flex-wrap: nowrap !important;
+                gap: 8px;
+                padding-bottom: 4px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .main-nav-tabs::-webkit-scrollbar {
+                display: none;
+            }
+            .nav-tab-btn {
+                flex-shrink: 0;
+                padding: 7px 14px;
+                font-size: 0.82rem;
+                white-space: nowrap;
+            }
+
+            /* 手機版頂部數據摘要 Pills：整齊網格適配 */
             .header-summary {
                 width: 100%;
                 display: grid;
@@ -203,15 +229,18 @@
             }
 
             .stat-pill {
-                font-size: 0.75rem;
-                padding: 7px 8px;
+                font-size: 0.72rem;
+                padding: 6px 4px;
                 justify-content: center;
                 min-width: 0;
                 overflow: hidden;
+                text-align: center;
+                flex-direction: column;
+                gap: 2px;
             }
 
             .stat-pill strong {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
                 white-space: nowrap;
             }
 
@@ -219,29 +248,23 @@
                 grid-column: 1 / -1;
             }
 
+            /* 手機版篩選列 */
             .month-bar {
                 flex-direction: column;
                 align-items: stretch !important;
-                gap: 12px !important;
-                padding: 0 16px;
-                margin-top: 14px;
+                gap: 10px !important;
+                padding: 0 14px;
+                margin-top: 12px;
             }
 
             .month-bar > div {
                 width: 100%;
             }
 
-            #month-chips-container {
-                overflow-x: auto;
-                flex-wrap: nowrap !important;
-                padding-bottom: 4px;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            #member-dropdown, #month-dropdown {
+            #member-dropdown, #month-dropdown, #schedule-status-dropdown {
                 width: 100% !important;
                 min-width: unset !important;
-                font-size: 1rem !important; /* 避免 iOS 手機點擊時自動放大畫面 */
+                font-size: 1rem !important; /* 防止 iOS 點擊輸入框自動放大 */
                 padding: 10px 14px !important;
             }
 
@@ -252,27 +275,27 @@
             }
 
             .container {
-                padding: 0 14px;
-                margin: 16px auto;
+                padding: 0 12px;
+                margin: 14px auto;
             }
 
             .mobile-tab-switch {
                 display: flex;
                 gap: 8px;
-                margin-bottom: 16px;
-                background: var(--bg-card);
+                margin-bottom: 14px;
+                background: #181a1e;
                 padding: 4px;
-                border-radius: 14px;
-                border: 1px solid var(--border-glass);
+                border-radius: 12px;
+                border: 1px solid #2a2d32;
             }
 
             .mobile-tab-btn {
                 flex: 1;
-                padding: 10px 0;
+                padding: 9px 0;
                 border: none;
                 background: transparent;
-                color: var(--text-muted);
-                font-size: 0.9rem;
+                color: #9299a1;
+                font-size: 0.85rem;
                 font-weight: 700;
                 border-radius: 10px;
                 cursor: pointer;
@@ -284,30 +307,29 @@
             }
 
             .mobile-tab-btn.active {
-                background: var(--accent-purple);
+                background: #607fa0;
                 color: white;
-                box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(96, 127, 160, 0.4);
             }
 
             .main-layout {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 16px;
             }
 
-            /* 手機版分頁切換：預設顯示時間紀錄，隱藏排行榜 */
             .sidebar-card {
                 display: none;
-                padding: 16px;
-                border-radius: 20px;
+                padding: 14px;
+                border-radius: 14px;
+                position: static;
             }
 
             .content-card {
                 display: block;
-                padding: 16px;
-                border-radius: 20px;
+                padding: 14px;
+                border-radius: 14px;
             }
 
-            /* 當切換到排行榜模式時 */
             .main-layout.show-leaderboard .sidebar-card {
                 display: block !important;
             }
@@ -317,12 +339,27 @@
             }
 
             .member-list {
-                max-height: calc(100vh - 280px); /* 手機版排行榜獨佔頁面 */
+                max-height: calc(100vh - 260px);
+            }
+
+            .schedules-grid {
+                grid-template-columns: 1fr !important;
+                gap: 14px;
+            }
+
+            .schedule-card {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .notice-card {
+                padding: 14px 16px;
+                border-radius: 12px;
             }
 
             .clip-row {
                 padding: 12px 14px;
-                border-radius: 14px;
+                border-radius: 12px;
             }
 
             .clip-header-row {
@@ -339,8 +376,32 @@
                 display: none;
             }
 
-            .sidebar-card {
-                position: static;
+            /* 手機版彈窗 (Modal) 體驗升級 */
+            .modal {
+                padding: 12px;
+                align-items: flex-end;
+            }
+
+            .modal-content {
+                max-width: 100% !important;
+                width: 100% !important;
+                border-radius: 20px 20px 16px 16px;
+                max-height: 90vh;
+            }
+
+            .modal-body {
+                padding: 18px 16px;
+            }
+
+            .modal-top-meta {
+                padding-right: 32px !important;
+            }
+
+            .close-modal {
+                top: 12px;
+                right: 12px;
+                width: 34px;
+                height: 34px;
             }
         }
 
@@ -1137,6 +1198,64 @@
             transform: translateX(4px);
         }
 
+        /* === Mobile presentation overrides === */
+        @media (max-width: 768px) {
+            .header-summary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .stat-pill:last-child {
+                grid-column: 1 / -1;
+            }
+
+            .clip-row {
+                display: grid;
+                grid-template-columns: 104px minmax(0, 1fr);
+                align-items: start;
+                gap: 12px;
+            }
+
+            .video-thumb {
+                width: 104px;
+                height: 68px;
+                border-radius: 10px;
+            }
+
+            .clip-details {
+                min-width: 0;
+            }
+
+            .nav-tab-btn,
+            .mobile-tab-btn,
+            .sched-subtab-btn,
+            .sort-btn,
+            .load-more-btn,
+            .close-modal {
+                min-height: 44px;
+            }
+
+            .sort-btn {
+                padding: 8px 12px;
+            }
+
+            .close-modal {
+                width: 44px;
+                height: 44px;
+            }
+
+            .modal {
+                width: 100%;
+                min-height: 100dvh;
+                padding: max(12px, env(safe-area-inset-top))
+                         12px
+                         max(12px, env(safe-area-inset-bottom));
+            }
+
+            .modal-content {
+                max-height: calc(100dvh - 24px);
+                overflow-y: auto;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1222,9 +1341,6 @@
                     <div class="sort-switch" id="live-sort-switch">
                         <button class="sort-btn active" id="sort-count-btn" onclick="setSort('count')">依次數</button>
                         <button class="sort-btn" id="sort-duration-btn" onclick="setSort('duration')">依時長</button>
-                        <button class="nav-tab-btn" id="nav-tab-notices" onclick="switchNavTab('notices')">
-                            <i class="fa-solid fa-bullhorn"></i> 官方公告
-                        </button>
                     </div>
                 </div>
 
