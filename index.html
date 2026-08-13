@@ -5,27 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tripleS Cosmo Dashboard | 直播 · 行程 · 官方公告</title>
     <meta name="description" content="tripleS Cosmo 綜合數據儀表板：即時統計直播次數與時長、藝人最新行程行事曆、官方公告與置頂規範資訊。">
-    
+
     <!-- Google Fonts & Supabase JS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/solid.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/regular.min.css">
 
     <style>
-        :root {
-            --bg-dark: #0d0f1d;
-            --bg-card: rgba(22, 27, 46, 0.75);
-            --bg-card-hover: rgba(33, 40, 68, 0.9);
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --accent-purple: #8b5cf6;
-            --accent-pink: #ec4899;
-        }
-
-        * {
+* {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -36,7 +27,7 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             min-height: 100vh;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
                 radial-gradient(circle at 90% 90%, rgba(6, 182, 212, 0.1) 0%, transparent 40%);
             background-attachment: fixed;
@@ -135,26 +126,7 @@
             align-items: center;
             gap: 6px;
         }
-
-        .month-chip {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glass);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-
-        .month-chip:hover, .month-chip.active {
-            background: var(--accent-purple);
-            color: white;
-            border-color: var(--accent-purple);
-            box-shadow: 0 0 14px rgba(139, 92, 246, 0.4);
-        }
-
-        /* 主區域 */
+/* 主區域 */
         .container {
             max-width: 1240px;
             margin: 24px auto;
@@ -247,6 +219,8 @@
             .stat-pill:last-child {
                 grid-column: 1 / -1;
             }
+
+            .notice-summary .stat-pill:first-child { grid-column: 1 / -1; }
 
             /* 手機版篩選列 */
             .month-bar {
@@ -357,6 +331,9 @@
                 border-radius: 12px;
             }
 
+            .notice-header { min-width: 0; flex-wrap: wrap; }
+            .notice-date { min-width: 0; flex: 1 1 100%; overflow: visible; text-overflow: clip; white-space: normal; overflow-wrap: anywhere; }
+
             .clip-row {
                 padding: 12px 14px;
                 border-radius: 12px;
@@ -372,12 +349,41 @@
                 flex-shrink: 0;
             }
 
+            .clip-header-row, .clip-details { min-width: 0; width: 100%; }
+            .clip-text-content.clip-content-line {
+                display: block;
+                -webkit-line-clamp: unset;
+                -webkit-box-orient: initial;
+                overflow: visible;
+                white-space: normal;
+                text-overflow: clip;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
+            .sched-card-top { min-width: 0; align-items: flex-start; }
+            .sched-card-top { display: grid; grid-template-columns: minmax(0, 1fr) max-content; gap: 8px; }
+            .sched-status-tag { justify-self: end; }
+            @media (max-width: 390px) {
+                .sched-card-top { grid-template-columns: 1fr; }
+                .sched-status-tag { justify-self: start; }
+            }
+            .sched-date { min-width: 0; flex: 1 1 auto; overflow: visible; text-overflow: clip; white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+            .sched-status-tag { flex: 0 0 auto; white-space: nowrap; }
+            .main-layout, .content-card, .schedules-grid, .schedule-card { min-width: 0; max-width: 100%; }
+            .sched-card-top, .sched-title, .sched-content, .sched-members-row, .sched-place { min-width: 0; max-width: 100%; }
+            .sched-member-badge { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .clip-date { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .duration-pill { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .member-tag { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
             .content-meta {
                 display: none;
             }
 
             /* 手機版彈窗 (Modal) 體驗升級 */
-            .modal {
+            body.modal-open { overflow: hidden; }
+
+        .modal {
                 padding: 12px;
                 align-items: flex-end;
             }
@@ -526,7 +532,7 @@
             color: var(--text-muted);
         }
 
-        /* 右側：Live Clip 時間與影片紀錄牆 */
+        /* 右側：直播紀錄 時間與影片紀錄牆 */
         .content-card {
             background: var(--bg-card);
             border: 1px solid var(--border-glass);
@@ -579,50 +585,7 @@
             background: rgba(255, 255, 255, 0.05);
             border-color: var(--accent-purple);
         }
-
-        .video-thumb {
-            width: 140px;
-            height: 90px;
-            border-radius: 12px;
-            background: #000;
-            position: relative;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .video-thumb video, .video-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .play-overlay-mini {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-        }
-
-        .duration-badge {
-            position: absolute;
-            bottom: 6px;
-            right: 6px;
-            background: rgba(0, 0, 0, 0.75);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 6px;
-        }
-
-        .clip-details {
+.clip-details {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -683,11 +646,15 @@
 
         .load-more-wrap {
             display: flex;
+            width: 100%;
             justify-content: center;
+            align-items: center;
             padding-top: 4px;
         }
 
         .load-more-btn {
+            display: block;
+            margin-inline: auto;
             background: rgba(139, 92, 246, 0.16);
             border: 1px solid rgba(139, 92, 246, 0.5);
             border-radius: 12px;
@@ -800,106 +767,7 @@
             padding: 60px 20px;
             color: var(--text-muted);
         }
-        /* Editorial archive theme: warm paper, ink, and a restrained evergreen accent. */
-        :root {
-            --bg-dark: #f4f1ea;
-            --bg-card: #fffdf8;
-            --bg-card-hover: #f0eee5;
-            --border-glass: #d9d7cc;
-            --text-main: #1d2924;
-            --text-muted: #68736b;
-            --accent-purple: #315b48;
-            --accent-pink: #a65c48;
-        }
 
-        body {
-            background: var(--bg-dark);
-            background-image: none;
-            color: var(--text-main);
-            font-family: 'Noto Sans TC', sans-serif;
-        }
-
-        header {
-            background: rgba(244, 241, 234, 0.96);
-            backdrop-filter: none;
-            border-bottom-color: #d9d7cc;
-        }
-
-        .brand-logo {
-            background: #315b48;
-            border-radius: 8px;
-            box-shadow: none;
-        }
-
-        .brand-title h1 {
-            color: #1d2924;
-            font-family: Georgia, 'Noto Serif TC', serif;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            background: none;
-            -webkit-text-fill-color: currentColor;
-        }
-
-        .stat-pill, .month-chip, #member-dropdown, .sort-switch {
-            background: #fffdf8 !important;
-            border-color: #d9d7cc !important;
-            box-shadow: none !important;
-            color: #526158 !important;
-        }
-
-        .stat-pill strong, #member-dropdown { color: #1d2924 !important; }
-        .month-chip { border-radius: 8px; }
-        .month-chip:hover, .month-chip.active, .sort-btn.active, .mobile-tab-btn.active {
-            background: #315b48 !important;
-            border-color: #315b48 !important;
-            box-shadow: none !important;
-            color: #fffdf8 !important;
-        }
-
-        .sidebar-card, .content-card {
-            background: #fffdf8;
-            border-color: #d9d7cc;
-            border-radius: 12px;
-            box-shadow: none;
-            backdrop-filter: none;
-        }
-
-        .member-item, .clip-row {
-            background: transparent;
-            border-color: #e4e1d8;
-            border-radius: 8px;
-        }
-
-        .member-item:hover, .member-item.active, .clip-row:hover {
-            background: #edf1eb;
-            border-color: #8eaa9b;
-            transform: none;
-        }
-
-        .clip-date, .badge-main { color: #315b48; }
-        .clip-text-content { color: #4f5b53; }
-        .duration-pill {
-            background: #edf1eb !important;
-            color: #315b48 !important;
-            border-color: #b9c9bd !important;
-        }
-
-        .member-tag {
-            background: #f0eee7;
-            border-color: #d9d7cc;
-            border-radius: 6px;
-            color: #405047;
-        }
-
-        .load-more-btn {
-            background: #315b48;
-            border-color: #315b48;
-            border-radius: 8px;
-            box-shadow: none;
-            color: #fffdf8;
-        }
-
-        .load-more-btn:hover { background: #244535; }
 
         /* Collection tracker palette: matte charcoal, steel blue, and a single signal green. */
         :root {
@@ -917,13 +785,13 @@
         header { background: #0d0e10; border-bottom-color: #2a2d32; }
         .brand-logo { background: #607fa0; color: #f1f3f2; }
         .brand-title h1 { color: #f1f3f2; }
-        .stat-pill, .month-chip, #member-dropdown, .sort-switch {
+        .stat-pill, #member-dropdown, .sort-switch {
             background: #181a1e !important;
             border-color: #2a2d32 !important;
             color: #9299a1 !important;
         }
         .stat-pill strong, #member-dropdown { color: #f1f3f2 !important; }
-        .month-chip:hover, .month-chip.active, .sort-btn.active, .mobile-tab-btn.active {
+        .sort-btn.active, .mobile-tab-btn.active {
             background: #607fa0 !important;
             border-color: #607fa0 !important;
             color: #f1f3f2 !important;
@@ -935,7 +803,9 @@
         .clip-text-content { color: #d4d8dc; }
         .duration-pill { background: #202a34 !important; color: #a9c4df !important; border-color: #3b536a !important; }
         .member-tag { background: #25282d; border-color: #383c42; color: #d4d8dc; }
-        .load-more-btn { background: #607fa0; border-color: #607fa0; color: #f1f3f2; }
+        .load-more-btn {
+            display: block;
+            margin-inline: auto; background: #607fa0; border-color: #607fa0; color: #f1f3f2; }
         .load-more-btn:hover { background: #7896b5; }
         .filters-bar { justify-content: flex-start; gap: 12px; }
         .filter-control { display: flex; align-items: center; gap: 8px; }
@@ -1023,7 +893,7 @@
         }
         .schedules-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: 1fr;
             gap: 20px;
         }
         .schedule-card {
@@ -1120,7 +990,7 @@
             border-radius: 50%;
             object-fit: cover;
         }
-    
+
         /* === 官方公告 (Notices) 樣式 === */
         .notices-timeline {
             display: flex;
@@ -1167,6 +1037,8 @@
             font-weight: 600;
         }
         .notice-pinned-badge {
+            white-space: nowrap;
+            flex-shrink: 0;
             background: rgba(245, 158, 11, 0.18);
             color: #fbbf24;
             border: 1px solid rgba(245, 158, 11, 0.4);
@@ -1208,20 +1080,15 @@
                 grid-column: 1 / -1;
             }
 
+            .notice-summary .stat-pill:first-child { grid-column: 1 / -1; }
+
             .clip-row {
-                display: grid;
-                grid-template-columns: 104px minmax(0, 1fr);
+                display: block;
+                width: 100%;
                 align-items: start;
                 gap: 12px;
             }
-
-            .video-thumb {
-                width: 104px;
-                height: 68px;
-                border-radius: 10px;
-            }
-
-            .clip-details {
+.clip-details {
                 min-width: 0;
             }
 
@@ -1255,6 +1122,11 @@
                 max-height: calc(100dvh - 24px);
                 overflow-y: auto;
             }
+
+            .modal { display: block; height: 100dvh; overflow-y: auto; overflow-x: hidden; padding: max(12px, env(safe-area-inset-top)) 12px calc(96px + env(safe-area-inset-bottom)); overscroll-behavior: contain; touch-action: pan-y; }
+            .modal-content { max-height: none; height: auto; margin: 0 auto 96px; overflow: visible; overscroll-behavior: contain; }
+            .modal-body { padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+            #modal-content-text > div { max-height: none !important; overflow: visible !important; }
         }
         /* Keep mobile navigation inside the available brand width. */
         @media (max-width: 768px) {
@@ -1315,6 +1187,55 @@
                 color: var(--text-muted);
             }
         }
+
+        /* Data loading and keyboard interaction states */
+        .loading-state[hidden] { display: none; }
+
+        .loading-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 76px;
+            margin-bottom: 14px;
+            border: 1px solid #2a2d32;
+            border-radius: 12px;
+            background: #181a1e;
+            color: #a9c4df;
+            font-size: .9rem;
+        }
+
+        .loading-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #3b536a;
+            border-top-color: #8eacd0;
+            border-radius: 50%;
+            animation: loading-spin .8s linear infinite;
+        }
+
+        .is-loading .stat-pill strong {
+            min-width: 2.5em;
+            color: transparent !important;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #202a34 25%, #2f3b48 50%, #202a34 75%);
+            background-size: 200% 100%;
+            animation: loading-shimmer 1.2s ease-in-out infinite;
+        }
+
+        .is-loading .main-layout { opacity: .45; pointer-events: none; }
+        .member-list { -webkit-overflow-scrolling: touch; }
+        .notice-card:focus-visible, .member-tag:focus-visible, .sched-member-badge:focus-visible {
+            outline: 2px solid #8eacd0;
+            outline-offset: 2px;
+        }
+        .member-tag, .sched-member-badge { cursor: pointer; }
+
+        @keyframes loading-spin { to { transform: rotate(360deg); } }
+        @keyframes loading-shimmer { to { background-position: -200% 0; } }
+        @media (prefers-reduced-motion: reduce) {
+            .loading-spinner, .is-loading .stat-pill strong { animation: none; }
+        }
     </style>
 </head>
 <body>
@@ -1325,10 +1246,10 @@
             <div class="brand">
                 <div class="brand-logo" id="brand-logo-icon"><i class="fa-solid fa-video"></i></div>
                 <div class="brand-title">
-                    <h1 id="page-main-title">tripleS Live-Clip 直播統計</h1>
+                    <h1 id="page-main-title">tripleS 直播紀錄統計</h1>
                     <div class="main-nav-tabs">
                         <button class="nav-tab-btn active" id="nav-tab-live" onclick="switchNavTab('live')">
-                            <i class="fa-solid fa-video"></i> Live 直播統計
+                            <i class="fa-solid fa-video"></i> 直播紀錄統計
                         </button>
                         <button class="nav-tab-btn" id="nav-tab-schedules" onclick="switchNavTab('schedules')">
                             <i class="fa-regular fa-calendar-days"></i> 藝人行程
@@ -1378,7 +1299,11 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" id="dashboard-container" aria-busy="true">
+        <div class="loading-state" id="loading-state" role="status" aria-live="polite">
+            <span class="loading-spinner" aria-hidden="true"></span>
+            <span>正在載入最新資料…</span>
+        </div>
 
         <!-- 手機版專屬分頁切換列 -->
         <div class="mobile-tab-switch">
@@ -1392,7 +1317,7 @@
 
         <!-- 統一雙欄 Main Layout (適用於 Live 與 Schedules) -->
         <div class="main-layout" id="main-layout">
-            
+
             <!-- 側邊欄：成員排行榜 (Live: 次數/時長, Schedules: 參演次數) -->
             <div class="sidebar-card">
                 <div class="sidebar-title">
@@ -1412,12 +1337,12 @@
             <div class="content-card">
                 <div class="content-header">
                     <div class="filter-title" id="current-filter-title">
-                        <i class="fa-solid fa-clock-rotate-left"></i> 所有 Live-Clip 時間紀錄
+                        <i class="fa-solid fa-clock-rotate-left"></i> 所有直播紀錄
                     </div>
                     <div class="content-meta" id="timeline-result-count" aria-live="polite"></div>
                 </div>
 
-                <!-- Live Clip 直播列表容器 -->
+                <!-- 直播紀錄 直播列表容器 -->
                 <div class="clips-timeline" id="clips-timeline-container">
                     <!-- 動態注入影片列表 -->
                 </div>
@@ -1467,14 +1392,14 @@
         let allLiveClips = [];
         let monthFilteredClips = [];
         let allSchedules = [];
-        
+
         let activeNavTab = 'live'; // 'live' 或 'schedules'
         let activeScheduleSubtab = 'upcoming'; // 'upcoming', 'past', 或 'all'
-        
+
         let selectedMonth = null;
         let selectedMember = null;
         let sortBy = 'count'; // Live 排序: 'count' 或 'duration'
-        
+
         let memberStats = [];
         let scheduleMemberStats = [];
         const PAGE_SIZE = 40;
@@ -1497,10 +1422,19 @@
             return `${hours >= 10 ? Math.round(hours) : hours.toFixed(1)} 小時`;
         }
 
+
+        function setLoading(isLoading) {
+            const root = document.getElementById('dashboard-container');
+            const loadingState = document.getElementById('loading-state');
+            if (root) root.setAttribute('aria-busy', String(isLoading));
+            if (loadingState) loadingState.hidden = !isLoading;
+            document.body.classList.toggle('is-loading', isLoading);
+        }
         // ===== 頁面初始化 (Init) =====
         async function init() {
+            setLoading(true);
             try {
-                // 1. 讀取 Live Clips 直播數據
+                // 1. 讀取 直播紀錄s 直播數據
                 const { data: liveData, error: liveError } = await supabaseClient
                     .from('room_posts')
                     .select('*')
@@ -1522,13 +1456,15 @@
 
             } catch (err) {
                 console.error("初始化載入失敗:", err);
+            } finally {
+                setLoading(false);
             }
         }
 
         // ===== 切換主頁籤 (Live 直播 vs. Schedules 行程 vs. Notices 公告) =====
         async function switchNavTab(tab) {
             activeNavTab = tab;
-            
+
             // 按鈕 Status
             const btnLive = document.getElementById('nav-tab-live');
             const btnSched = document.getElementById('nav-tab-schedules');
@@ -1547,7 +1483,7 @@
                 if (titleEl) titleEl.innerText = "tripleS 官方公告與聲明";
                 if (logoIcon) logoIcon.innerHTML = '<i class="fa-solid fa-bullhorn"></i>';
             } else {
-                if (titleEl) titleEl.innerText = "tripleS Live-Clip 直播統計";
+                if (titleEl) titleEl.innerText = "tripleS 直播紀錄統計";
                 if (logoIcon) logoIcon.innerHTML = '<i class="fa-solid fa-video"></i>';
             }
 
@@ -1701,6 +1637,8 @@
         function updateHeaderSummary() {
             const summaryBox = document.getElementById('header-summary-container');
             if (!summaryBox) return;
+
+            summaryBox.classList.toggle('notice-summary', activeNavTab === 'notices');
 
             if (activeNavTab === 'schedules') {
                 const now = new Date();
@@ -1946,8 +1884,8 @@
 
             if (titleEl) {
                 titleEl.innerHTML = selectedMember
-                    ? `<i class="fa-solid fa-user-check"></i> ${selectedMember} 參與的 Live-Clip 紀錄 (${monthText})`
-                    : `<i class="fa-solid fa-clock-rotate-left"></i> Live-Clip 時間紀錄 (${monthText})`;
+                    ? `<i class="fa-solid fa-user-check"></i> ${selectedMember} 參與的 直播紀錄 (${monthText})`
+                    : `<i class="fa-solid fa-clock-rotate-left"></i> 直播紀錄 (${monthText})`;
             }
 
             const filteredClips = monthFilteredClips.filter(post => {
@@ -1962,7 +1900,7 @@
             if (loadMoreButton) loadMoreButton.hidden = visibleClips.length >= filteredClips.length;
 
             if (filteredClips.length === 0) {
-                container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-video-slash" style="font-size:36px;margin-bottom:12px;"></i><p>尚無符合條件的 Live-Clip 紀錄</p></div>`;
+                container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-video-slash" style="font-size:36px;margin-bottom:12px;"></i><p>尚無符合條件的 直播紀錄</p></div>`;
                 return;
             }
 
@@ -1984,7 +1922,7 @@
                             </div>
                             <div class="clip-text-content clip-content-line">${post.content || 'Live 直播紀錄'}</div>
                             <div class="clip-participating-members clip-member-summary">
-                                ${members.slice(0, 3).map(ch => `<span class="member-tag" onclick="selectMember('${ch.name}')" style="cursor:pointer;" title="點擊篩選 ${ch.name}"><span class="member-dot" style="background:${ch.primaryColorHex || '#607fa0'}"></span>${ch.name}</span>`).join('')}
+                                ${members.slice(0, 3).map(ch => `<span class="member-tag" role="button" tabindex="0" onclick="selectMember('${ch.name}')" style="cursor:pointer;" title="點擊篩選 ${ch.name}"><span class="member-dot" style="background:${ch.primaryColorHex || '#607fa0'}"></span>${ch.name}</span>`).join('')}
                                 ${members.length > 3 ? `<span class="member-tag">+${members.length - 3}</span>` : ''}
                             </div>
                         </div>
@@ -2092,7 +2030,7 @@
                 const endD = new Date(s.end_at || s.start_at);
                 // 依據韓國標準時間 (KST / Asia/Seoul) 精準格式化開始與結束時間
                 const dateRangeStr = formatKSTScheduleTime(s.start_at, s.end_at);
-                
+
                 let statusTagHtml = '';
                 const isEnded = endD < now;
                 if (!isEnded) {
@@ -2117,7 +2055,7 @@
                         ${members.length > 0 ? `
                             <div class="sched-members-row">
                                 ${members.map(m => `
-                                    <span class="sched-member-badge" onclick="selectMember('${m.name}')" style="cursor:pointer;" title="點擊篩選 ${m.name}">
+                                    <span class="sched-member-badge" role="button" tabindex="0" onclick="selectMember('${m.name}')" style="cursor:pointer;" title="點擊篩選 ${m.name}">
                                         <img class="sched-member-avatar" src="${m.profileImageUrl || ''}" onerror="this.src='https://via.placeholder.com/22'" alt="${m.name}">
                                         ${m.name}
                                     </span>
@@ -2129,7 +2067,7 @@
             }).join('');
         }
 
-        
+
         // ============================================================
         // 📢 官方公告 (Notices) Supabase 資料抓取與渲染邏輯
         // ============================================================
@@ -2184,7 +2122,7 @@
                 const cleanTitle = (n.title || '').replace('[PINNED]', '').trim();
 
                 return `
-                    <article class="notice-card ${n.is_pinned ? 'is-pinned' : ''}" onclick="openNoticeModal(${n.id})">
+                    <article class="notice-card ${n.is_pinned ? 'is-pinned' : ''}" role="button" tabindex="0" onclick="openNoticeModal(${n.id})">
                         <div class="notice-card-body">
                             <div class="notice-header">
                                 <div class="notice-date"><i class="fa-regular fa-clock"></i> ${dateStr}</div>
@@ -2205,6 +2143,7 @@
             const videoBox = document.getElementById('modal-video-box');
             if (videoBox) videoBox.innerHTML = '';
             if (modal) modal.classList.remove('open');
+            document.body.classList.remove('modal-open');
         }
 
         function linkifyText(text) {
@@ -2295,7 +2234,10 @@
                 contentText.innerHTML = `<div style="white-space: pre-wrap; font-size: 0.96rem; line-height: 1.75; color: #d1d5db; max-height: 65vh; overflow-y: auto; padding-right: 8px;">${formattedContent}${imagesHtml}</div>`;
             }
 
-            if (modal) modal.classList.add('open');
+            if (modal) {
+                modal.classList.add('open');
+                document.body.classList.add('modal-open');
+            }
         }
 
         window.addEventListener('click', (e) => {
@@ -2322,6 +2264,14 @@
             }
         }
 
+
+        document.addEventListener('keydown', (event) => {
+            const target = event.target;
+            if (!target.matches('.member-tag, .sched-member-badge, .notice-card')) return;
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            event.preventDefault();
+            target.click();
+        });
         window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
