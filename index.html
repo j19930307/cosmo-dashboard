@@ -139,6 +139,8 @@
             gap: 28px;
         }
 
+        .mobile-main-nav { display: none; }
+
         /* 手機版分頁切換列 */
         .mobile-tab-switch {
             display: none;
@@ -174,6 +176,7 @@
 
             /* 手機版頂部導覽分頁頁籤：流暢橫向滾動 */
             .main-nav-tabs {
+                display:none;
                 width: 100%;
                 overflow-x: auto;
                 flex-wrap: nowrap !important;
@@ -182,6 +185,14 @@
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: none;
             }
+            .mobile-main-nav { display:flex; position:relative; width:100%; }
+            .mobile-main-nav-trigger { width:100%; min-height:44px; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 12px; border:1px solid #2a2d32; border-radius:10px; background:#181a1e; color:#f1f3f2; font:inherit; font-size:.9rem; font-weight:700; cursor:pointer; }
+            .mobile-main-nav-trigger i:last-child { color:#9299a1; transition:transform .2s ease; }
+            .mobile-main-nav.open .mobile-main-nav-trigger i:last-child { transform:rotate(180deg); }
+            .mobile-main-nav-menu { display:none; position:absolute; z-index:20; top:calc(100% + 6px); left:0; right:0; padding:6px; border:1px solid #2a2d32; border-radius:12px; background:#181a1e; box-shadow:0 12px 28px rgba(0,0,0,.35); }
+            .mobile-main-nav.open .mobile-main-nav-menu { display:grid; gap:4px; }
+            .mobile-main-nav-option { min-height:44px; display:flex; align-items:center; gap:10px; width:100%; padding:9px 10px; border:0; border-radius:8px; background:transparent; color:#9299a1; font:inherit; font-size:.9rem; font-weight:700; text-align:left; cursor:pointer; }
+            .mobile-main-nav-option:hover,.mobile-main-nav-option.active { background:#607fa0; color:#f1f3f2; }
             .main-nav-tabs::-webkit-scrollbar {
                 display: none;
             }
@@ -1123,9 +1134,9 @@
                 overflow-y: auto;
             }
 
-            .modal { display: block; height: 100dvh; overflow-y: auto; overflow-x: hidden; padding: max(12px, env(safe-area-inset-top)) 12px calc(96px + env(safe-area-inset-bottom)); overscroll-behavior: contain; touch-action: pan-y; }
-            .modal-content { max-height: none; height: auto; margin: 0 auto 96px; overflow: visible; overscroll-behavior: contain; }
-            .modal-body { padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+            .modal { display: block; height: 100dvh; overflow-y: auto; overflow-x: hidden; padding: max(12px, env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom)); overscroll-behavior: contain; touch-action: pan-y; }
+            .modal-content { max-height: none; height: auto; margin: 0 auto 12px; overflow: visible; overscroll-behavior: contain; }
+            .modal-body { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
             #modal-content-text > div { max-height: none !important; overflow: visible !important; }
         }
         /* Keep mobile navigation inside the available brand width. */
@@ -1137,6 +1148,7 @@
             }
 
             .main-nav-tabs {
+            display: none;
                 width: 100%;
                 max-width: 100%;
                 min-width: 0;
@@ -1257,6 +1269,14 @@
                         <button class="nav-tab-btn" id="nav-tab-notices" onclick="switchNavTab('notices')">
                             <i class="fa-solid fa-bullhorn"></i> 官方公告
                         </button>
+                    </div>
+                    <div class="mobile-main-nav" id="mobile-main-nav">
+                        <button class="mobile-main-nav-trigger" id="mobile-main-nav-trigger" type="button" aria-expanded="false" aria-controls="mobile-main-nav-menu" onclick="toggleMobileMainNav()"><span id="mobile-main-nav-label"><i class="fa-solid fa-video"></i> 直播紀錄統計</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+                        <div class="mobile-main-nav-menu" id="mobile-main-nav-menu" role="menu">
+                            <button class="mobile-main-nav-option active" type="button" role="menuitem" data-nav-tab="live" onclick="switchNavTab('live')"><i class="fa-solid fa-video"></i> 直播紀錄統計</button>
+                            <button class="mobile-main-nav-option" type="button" role="menuitem" data-nav-tab="schedules" onclick="switchNavTab('schedules')"><i class="fa-regular fa-calendar-days"></i> 藝人行程</button>
+                            <button class="mobile-main-nav-option" type="button" role="menuitem" data-nav-tab="notices" onclick="switchNavTab('notices')"><i class="fa-solid fa-bullhorn"></i> 官方公告</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1473,6 +1493,16 @@
             if (btnSched) btnSched.classList.toggle('active', tab === 'schedules');
             if (btnNotice) btnNotice.classList.toggle('active', tab === 'notices');
 
+            const mobileMainNav = document.getElementById('mobile-main-nav');
+            const mobileMainNavTrigger = document.getElementById('mobile-main-nav-trigger');
+            const mobileMainNavLabel = document.getElementById('mobile-main-nav-label');
+            const mobileNavOptions = document.querySelectorAll('.mobile-main-nav-option');
+            const navLabels = { live: '直播紀錄統計', schedules: '藝人行程', notices: '官方公告' };
+            if (mobileMainNavLabel) mobileMainNavLabel.textContent = navLabels[tab];
+            if (mobileMainNavTrigger) mobileMainNavTrigger.setAttribute('aria-expanded', 'false');
+            if (mobileMainNav) mobileMainNav.classList.remove('open');
+            mobileNavOptions.forEach(option => option.classList.toggle('active', option.dataset.navTab === tab));
+
             // 標題與 Icon
             const titleEl = document.getElementById('page-main-title');
             const logoIcon = document.getElementById('brand-logo-icon');
@@ -1502,7 +1532,11 @@
                 ? '<i class="fa-regular fa-calendar-days"></i> 行程紀錄'
                 : '<i class="fa-solid fa-clock-rotate-left"></i> 直播時間紀錄';
             if (mobileLeaderboard) mobileLeaderboard.innerHTML = '<i class="fa-solid fa-trophy"></i> 成員排行榜';
-            if (tab !== 'notices') switchMobileTab('timeline');
+            if (tab !== 'notices') {
+                switchMobileTab('timeline');
+            } else if (mainLayout) {
+                mainLayout.classList.remove('show-leaderboard');
+            }
 
             if (tab === 'schedules') {
                 if (monthWrap) monthWrap.style.display = 'none';
@@ -2248,6 +2282,14 @@
         });
 
         // ===== 手機版分頁切換 =====
+        function toggleMobileMainNav() {
+            const menu = document.getElementById('mobile-main-nav');
+            const trigger = document.getElementById('mobile-main-nav-trigger');
+            if (!menu || !trigger) return;
+            const isOpen = menu.classList.toggle('open');
+            trigger.setAttribute('aria-expanded', String(isOpen));
+        }
+
         function switchMobileTab(tab) {
             const layout = document.getElementById('main-layout');
             const btnTimeline = document.getElementById('mtab-timeline');
