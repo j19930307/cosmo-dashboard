@@ -105,6 +105,12 @@
             font-size: 0.95rem;
         }
 
+        .stat-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         /* 月份篩選列 */
         .month-bar {
             max-width: 1240px;
@@ -124,7 +130,7 @@
             white-space: nowrap;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
         }
 /* 主區域 */
         .container {
@@ -185,7 +191,7 @@
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: none;
             }
-            .mobile-main-nav { display:flex; position:relative; width:100%; }
+            .mobile-main-nav { display:flex; position:relative; width:100%; margin-top: 10px; }
             .mobile-main-nav-trigger { width:100%; min-height:44px; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 12px; border:1px solid #2a2d32; border-radius:10px; background:#181a1e; color:#f1f3f2; font:inherit; font-size:.9rem; font-weight:700; cursor:pointer; }
             .mobile-main-nav-trigger i:last-child { color:#9299a1; transition:transform .2s ease; }
             .mobile-main-nav.open .mobile-main-nav-trigger i:last-child { transform:rotate(180deg); }
@@ -578,7 +584,11 @@
         .clips-timeline {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 0;
+        }
+
+        .clips-timeline > .clip-row + .clip-row {
+            margin-top: 16px;
         }
 
         .clip-row {
@@ -750,6 +760,11 @@
 
         .modal-body {
             padding: 24px;
+        }
+
+        .modal-notice-title {
+            padding-right: 52px;
+            overflow-wrap: anywhere;
         }
 
         .copy-content-btn {
@@ -1117,8 +1132,9 @@
             }
 
             .close-modal {
-                width: 44px;
-                height: 44px;
+                width: 40px;
+                height: 40px;
+                min-height: 40px;
             }
 
             .modal {
@@ -1175,7 +1191,7 @@
                 display: inline-flex;
                 align-items: center;
                 min-width: 0;
-                gap: 6px;
+                gap: 10px;
                 white-space: nowrap;
                 font-size: 0.78rem;
             }
@@ -2243,7 +2259,7 @@
 
             if (tagsBox) {
                 tagsBox.innerHTML = `
-                    <div style="font-size:1.15rem; font-weight:700; color:#f1f3f2; line-height:1.4; margin-bottom:16px; border-bottom:1px solid #2a2d32; padding-bottom:12px;">
+                    <div class="modal-notice-title" style="font-size:1.15rem; font-weight:700; color:#f1f3f2; line-height:1.4; margin-bottom:16px; border-bottom:1px solid #2a2d32; padding-bottom:12px;">
                         ${notice.title}
                     </div>
                 `;
