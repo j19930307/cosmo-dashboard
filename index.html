@@ -1256,6 +1256,65 @@
                 overflow-y: auto;
             }
         }
+        /* Keep mobile navigation inside the available brand width. */
+        @media (max-width: 768px) {
+            .brand-title {
+                min-width: 0;
+                width: 0;
+                flex: 1 1 auto;
+            }
+
+            .main-nav-tabs {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                touch-action: pan-x;
+            }
+
+            .header-summary {
+                align-items: stretch;
+            }
+
+            .stat-pill {
+                display: grid;
+                grid-template-columns: auto minmax(0, 1fr) auto;
+                align-items: center;
+                justify-content: initial;
+                flex-direction: initial;
+                min-height: 44px;
+                padding: 8px 10px;
+                text-align: left;
+                gap: 6px;
+            }
+
+            .stat-label {
+                display: inline-flex;
+                align-items: center;
+                min-width: 0;
+                gap: 6px;
+                white-space: nowrap;
+                font-size: 0.78rem;
+            }
+
+            .stat-label i {
+                width: 16px;
+                text-align: center;
+            }
+
+            .stat-pill strong {
+                min-width: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-align: right;
+                font-size: 0.95rem;
+            }
+
+            .stat-unit {
+                white-space: nowrap;
+                font-size: 0.75rem;
+                color: var(--text-muted);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1283,9 +1342,9 @@
 
             <!-- 動態頂部統計摘要 Pills -->
             <div class="header-summary" id="header-summary-container">
-                <div class="stat-pill"><i class="fa-solid fa-clapperboard"></i> 總次數: <strong id="total-live-clips">0</strong> 次</div>
-                <div class="stat-pill"><i class="fa-solid fa-clock"></i> 總時長: <strong id="total-live-duration">0 小時</strong></div>
-                <div class="stat-pill"><i class="fa-solid fa-user-group"></i> 成員數: <strong id="total-members-count">0</strong> 位</div>
+                <div class="stat-pill"><span class="stat-label"><i class="fa-solid fa-clapperboard"></i>總次數</span><strong id="total-live-clips">0</strong><span class="stat-unit">次</span></div>
+                <div class="stat-pill"><span class="stat-label"><i class="fa-solid fa-clock"></i>總時長</span><strong id="total-live-duration">0</strong><span class="stat-unit">小時</span></div>
+                <div class="stat-pill"><span class="stat-label"><i class="fa-solid fa-user-group"></i>成員數</span><strong id="total-members-count">0</strong><span class="stat-unit">位</span></div>
             </div>
         </div>
     </header>
@@ -1499,12 +1558,21 @@
             const memberWrap = memberSelect ? memberSelect.closest('.filter-control') : null;
             const sidebarCard = document.querySelector('.sidebar-card');
             const mainLayout = document.getElementById('main-layout');
+            const mobileTabSwitch = document.querySelector('.mobile-tab-switch');
+            const mobileTimeline = document.getElementById('mtab-timeline');
+            const mobileLeaderboard = document.getElementById('mtab-leaderboard');
+            if (mobileTabSwitch) mobileTabSwitch.style.display = tab === 'notices' ? 'none' : '';
+            if (mobileTimeline) mobileTimeline.innerHTML = tab === 'schedules'
+                ? '<i class="fa-regular fa-calendar-days"></i> 行程紀錄'
+                : '<i class="fa-solid fa-clock-rotate-left"></i> 直播時間紀錄';
+            if (mobileLeaderboard) mobileLeaderboard.innerHTML = '<i class="fa-solid fa-trophy"></i> 成員排行榜';
+            if (tab !== 'notices') switchMobileTab('timeline');
 
             if (tab === 'schedules') {
                 if (monthWrap) monthWrap.style.display = 'none';
                 if (schedStatusWrap) schedStatusWrap.style.display = 'flex';
                 if (memberWrap) memberWrap.style.display = 'flex';
-                if (sidebarCard) sidebarCard.style.display = 'block';
+                if (sidebarCard) sidebarCard.style.removeProperty('display');
                 if (mainLayout) mainLayout.style.gridTemplateColumns = '';
             } else if (tab === 'notices') {
                 if (monthWrap) monthWrap.style.display = 'none';
@@ -1516,7 +1584,7 @@
                 if (monthWrap) monthWrap.style.display = 'flex';
                 if (schedStatusWrap) schedStatusWrap.style.display = 'none';
                 if (memberWrap) memberWrap.style.display = 'flex';
-                if (sidebarCard) sidebarCard.style.display = 'block';
+                if (sidebarCard) sidebarCard.style.removeProperty('display');
                 if (mainLayout) mainLayout.style.gridTemplateColumns = '';
             }
 
@@ -1640,22 +1708,22 @@
                 const pastCount = allSchedules.length - upcomingCount;
 
                 summaryBox.innerHTML = `
-                    <div class="stat-pill"><i class="fa-regular fa-calendar-check"></i> 總行程: <strong>${allSchedules.length}</strong> 筆</div>
-                    <div class="stat-pill"><i class="fa-solid fa-fire" style="color:#ec4899;"></i> 即將到來: <strong>${upcomingCount}</strong> 筆</div>
-                    <div class="stat-pill"><i class="fa-solid fa-clock-rotate-left"></i> 已結束: <strong>${pastCount}</strong> 筆</div>
+                    <div class="stat-pill"><span class="stat-label"><i class="fa-regular fa-calendar-check"></i>總行程</span><strong>${allSchedules.length}</strong><span class="stat-unit">筆</span></div>
+                    <div class="stat-pill"><span class="stat-label"><i class="fa-solid fa-fire" style="color:#ec4899;"></i>即將到來</span><strong>${upcomingCount}</strong><span class="stat-unit">筆</span></div>
+                    <div class="stat-pill"><span class="stat-label"><i class="fa-solid fa-clock-rotate-left"></i>已結束</span><strong>${pastCount}</strong><span class="stat-unit">筆</span></div>
                 `;
             } else if (activeNavTab === 'notices') {
                 const pinnedCount = allNotices.filter(n => n.is_pinned).length;
                 summaryBox.innerHTML = `
-                    <div class="stat-pill"><i class="fa-solid fa-bullhorn"></i> 總公告: <strong>${allNotices.length}</strong> 則</div>
-                    <div class="stat-pill"><i class="fa-solid fa-thumbtack" style="color:#f59e0b;"></i> 置頂公告: <strong>${pinnedCount}</strong> 則</div>
+                    <div class="stat-pill"><span class="stat-label"><i class="fa-solid fa-bullhorn"></i>總公告</span><strong>${allNotices.length}</strong><span class="stat-unit">則</span></div>
+                    <div class="stat-pill"><span class="stat-label"><i class="fa-solid fa-thumbtack" style="color:#f59e0b;"></i>置頂公告</span><strong>${pinnedCount}</strong><span class="stat-unit">則</span></div>
                 `;
             } else {
                 const totalSec = monthFilteredClips.reduce((sum, p) => sum + (p.duration || 0), 0);
                 summaryBox.innerHTML = `
-                    <div class="stat-pill"><i class="fa-solid fa-clapperboard"></i> 總次數: <strong>${monthFilteredClips.length}</strong> 次</div>
-                    <div class="stat-pill"><i class="fa-solid fa-clock"></i> 總時長: <strong>${formatSummaryDuration(totalSec)}</strong></div>
-                    <div class="stat-pill"><i class="fa-solid fa-user-group"></i> 成員數: <strong>${memberStats.length}</strong> 位</div>
+                    <div class="stat-pill"><span class="stat-label"><i class="fa-solid fa-clapperboard"></i>總次數</span><strong>${monthFilteredClips.length}</strong><span class="stat-unit">次</span></div>
+                    <div class="stat-pill"><span class="stat-label"><i class="fa-solid fa-clock"></i>總時長</span><strong>${formatSummaryDuration(totalSec)}</strong><span class="stat-unit"></span></div>
+                    <div class="stat-pill"><span class="stat-label"><i class="fa-solid fa-user-group"></i>成員數</span><strong>${memberStats.length}</strong><span class="stat-unit">位</span></div>
                 `;
             }
         }
