@@ -1478,11 +1478,32 @@
                     .from('room_posts')
                     .select('*')
                     .eq('kind', 'live-clip')
-                    .neq('access_type', 'all')
                     .order('created_at', { ascending: false });
 
                 if (!liveError && liveData) {
-                    allLiveClips = liveData;
+                    // 多重特徵綜合判斷 (Comprehensive Multi-Signal Classifier):
+                    // 1. 標題包含 [Behind] 顯性標籤 ➜ 排除 (幕後短片)
+                    // 2. 縮圖含有 /broadcaster/ 或 live-thumbnail- ➜ 正向保證為真實直播 (包含 Xinyu 45s 短直播 ID 2202、YooYeon 3151s 直播)
+                    // 3. 舊系統直播 (admin 上傳縮圖) 且 duration >= 180 秒 ➜ 保留 (如 SeoYeon 1968s 舊直播 ID 34)
+                    // 4. 其餘 (admin 上傳縮圖 且 duration < 180 秒) ➜ 排除 (如 ID 4 的 From.SeoYeon 67s 短影音)
+                    allLiveClips = liveData.filter(post => {
+                        const raw = post.raw_data || {};
+                        const videoItem = raw.videoItem || {};
+                        const thumb = videoItem.thumbnailUrl || post.thumbnail_url || '';
+                        const textContent = post.content || '';
+                        const duration = post.duration || videoItem.duration || 0;
+
+                        if (/^\[Behind\]/i.test(textContent) || textContent.includes('[Behind]') || textContent.includes('[BEHIND]')) {
+                            return false;
+                        }
+                        if (thumb.includes('/broadcaster/') || thumb.includes('live-thumbnail-')) {
+                            return true; // 100% 正向證明為即時直播推流
+                        }
+                        if (duration >= 180) {
+                            return true; // 舊版系統直播 (時長 >= 3 分鐘)
+                        }
+                        return false; // 其餘 admin 縮圖之短影音/Message
+                    });
                     buildMonthChips();
                     applyMonthFilter();
                 }
